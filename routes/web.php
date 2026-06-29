@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\DevisController;
 use App\Http\Controllers\EnterpriseController;
@@ -40,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('projects', ProjectController::class);
     Route::resource('devis', DevisController::class)->only(['index', 'store', 'destroy']);
     Route::resource('gallery', ProjectGalleryController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('categories', CategoryController::class);
     Route::inertia('settings', 'settings/appearance')->name('settings.appearance');
 
     // Contact messages management

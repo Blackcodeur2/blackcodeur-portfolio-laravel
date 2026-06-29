@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { /*BookOpen, FolderGit2,*/ LayoutGrid, Workflow, Activity, PlaneLanding, GalleryThumbnails, Settings, Mail } from 'lucide-react';
+import { /*BookOpen, FolderGit2,*/ LayoutGrid, Workflow, Activity, PlaneLanding, GalleryThumbnails, Settings, Mail, Tags } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -19,6 +19,7 @@ import projects from '@/routes/projects';
 import devis from '@/routes/devis';
 import gallery from '@/routes/gallery';
 import contactMessages from '@/routes/contact-messages';
+import categories from '@/routes/categories';
 import type { NavItem } from '@/types';
 import settings from '@/routes/settings';
 
@@ -32,6 +33,11 @@ const mainNavItems: NavItem[] = [
         title: 'Entreprises',
         href: enterprises.index(),
         icon: Workflow,
+    },
+    {
+        title: 'Catégories',
+        href: categories.index(),
+        icon: Tags,
     },
     {
         title: 'Projets',

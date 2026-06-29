@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password'),
         ]);
 
-        \App\Models\Profile::create([
+        Profile::create([
             'user_id' => $user->id,
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -34,9 +35,9 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
 
         // Generate mock data for the application
-        \App\Models\Enterprise::factory(12)->create();
-        \App\Models\Project::factory(20)->create();
-        \App\Models\Devis::factory(10)->create();
-        \App\Models\ProjectGallery::factory(15)->create();
+        // \App\Models\Enterprise::factory(12)->create();
+        // \App\Models\Project::factory(20)->create();
+        // \App\Models\Devis::factory(10)->create();
+        // \App\Models\ProjectGallery::factory(15)->create();
     }
 }
