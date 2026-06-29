@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { /*BookOpen, FolderGit2,*/ LayoutGrid, Workflow, Activity, PlaneLanding, GalleryThumbnails, Settings } from 'lucide-react';
+import { /*BookOpen, FolderGit2,*/ LayoutGrid, Workflow, Activity, PlaneLanding, GalleryThumbnails, Settings, Mail } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -18,6 +18,7 @@ import enterprises from '@/routes/enterprises';
 import projects from '@/routes/projects';
 import devis from '@/routes/devis';
 import gallery from '@/routes/gallery';
+import contactMessages from '@/routes/contact-messages';
 import type { NavItem } from '@/types';
 import settings from '@/routes/settings';
 
@@ -46,6 +47,11 @@ const mainNavItems: NavItem[] = [
         title: 'Galerie',
         href: gallery.index(),
         icon: GalleryThumbnails,
+    },
+    {
+        title: 'Messages',
+        href: contactMessages.index(),
+        icon: Mail,
     },
     {
         title: 'Paramètres',

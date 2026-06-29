@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, useForm } from '@inertiajs/react';
 import { dashboard, login, register } from '@/routes';
 import { 
     Building2, 
@@ -16,9 +16,13 @@ import {
     ChevronLeft,
     ChevronRight,
     X,
-    MessageSquare
+    MessageSquare,
+    Sun,
+    Moon,
+    Monitor
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
+import { useAppearance } from '@/hooks/use-appearance';
 
 interface Project {
     id: number;
@@ -68,11 +72,59 @@ interface Props {
     profile?: PortfolioProfile | null;
 }
 
+// Scroll-reveal: adds .visible to elements with .sr class when they enter the viewport
+function useScrollReveal() {
+    useEffect(() => {
+        const els = document.querySelectorAll('.sr');
+        if (!els.length) return;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.12 },
+        );
+        els.forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
+}
+
 export default function Welcome({ projects, gallery, stats, profile }: Props) {
     const { auth } = usePage().props;
+    const { appearance, updateAppearance } = useAppearance();
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
     const [scrolled, setScrolled] = useState(false);
     const [formSubmitted, setFormSubmitted] = useState(false);
+
+    const contactForm = useForm({
+        name: '',
+        email: '',
+        message: '',
+    });
+
+    useScrollReveal();
+
+    const submitContact = (e: React.FormEvent) => {
+        e.preventDefault();
+        contactForm.post('/contact', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setFormSubmitted(true);
+                contactForm.reset();
+            },
+        });
+    };
+
+    // Cycle through: light → dark → system
+    const cycleTheme = () => {
+        if (appearance === 'light') updateAppearance('dark');
+        else if (appearance === 'dark') updateAppearance('system');
+        else updateAppearance('light');
+    };
 
     // Track scroll to change header appearance
     useEffect(() => {
@@ -180,6 +232,47 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                     .chip-float-1 { animation: chip-float-1 7s ease-in-out infinite; }
                     .chip-float-2 { animation: chip-float-2 9s ease-in-out infinite; animation-delay: 2s; }
                     .chip-float-3 { animation: chip-float-3 11s ease-in-out infinite; animation-delay: 4s; }
+
+                    /* ── Scroll Reveal System ── */
+                    @keyframes reveal-up {
+                        from { opacity: 0; transform: translateY(40px); }
+                        to   { opacity: 1; transform: translateY(0); }
+                    }
+                    @keyframes reveal-left {
+                        from { opacity: 0; transform: translateX(-48px); }
+                        to   { opacity: 1; transform: translateX(0); }
+                    }
+                    @keyframes reveal-right {
+                        from { opacity: 0; transform: translateX(48px); }
+                        to   { opacity: 1; transform: translateX(0); }
+                    }
+                    @keyframes reveal-zoom {
+                        from { opacity: 0; transform: scale(0.88); }
+                        to   { opacity: 1; transform: scale(1); }
+                    }
+                    /* Initial hidden state */
+                    .sr { opacity: 0; }
+                    /* Triggered state */
+                    .sr.visible {
+                        animation-fill-mode: both;
+                        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+                        animation-duration: 0.7s;
+                    }
+                    .sr.visible.sr-up    { animation-name: reveal-up; }
+                    .sr.visible.sr-left  { animation-name: reveal-left; }
+                    .sr.visible.sr-right { animation-name: reveal-right; }
+                    .sr.visible.sr-zoom  { animation-name: reveal-zoom; }
+                    /* Stagger delays for children */
+                    .sr.visible.sr-d1 { animation-delay: 0.05s; }
+                    .sr.visible.sr-d2 { animation-delay: 0.12s; }
+                    .sr.visible.sr-d3 { animation-delay: 0.20s; }
+                    .sr.visible.sr-d4 { animation-delay: 0.28s; }
+                    .sr.visible.sr-d5 { animation-delay: 0.36s; }
+                    .sr.visible.sr-d6 { animation-delay: 0.44s; }
+                    /* Respect reduced-motion preference */
+                    @media (prefers-reduced-motion: reduce) {
+                        .sr { opacity: 1 !important; animation: none !important; }
+                    }
                 `}</style>
 
                 {/* ── BACKGROUND ORNAMENTS (Tech & Dynamic) ── */}
@@ -336,8 +429,20 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             <a href="#contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</a>
                         </nav>
 
-                        {/* Right Auth Link */}
-                        <div className="flex items-center gap-4">
+                        {/* Right: Theme Toggle + Auth */}
+                        <div className="flex items-center gap-3">
+                            {/* Theme toggle button */}
+                            <button
+                                id="theme-toggle"
+                                onClick={cycleTheme}
+                                title={appearance === 'light' ? 'Passer en mode sombre' : appearance === 'dark' ? 'Passer en mode système' : 'Passer en mode clair'}
+                                className="h-9 w-9 inline-flex items-center justify-center rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-zinc-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200 shadow-xs"
+                            >
+                                {appearance === 'light' && <Sun className="h-4 w-4" />}
+                                {appearance === 'dark' && <Moon className="h-4 w-4" />}
+                                {appearance === 'system' && <Monitor className="h-4 w-4" />}
+                            </button>
+
                             {auth.user ? (
                                 <Link
                                     href={dashboard()}
@@ -376,7 +481,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                         {profile ? (
                             <div className="grid gap-12 lg:grid-cols-12 items-center text-left">
                                 {/* Left Side: Text Details */}
-                                <div className="lg:col-span-7 space-y-6">
+                                <div className="lg:col-span-7 space-y-6 sr sr-left">
                                     <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
                                         <Briefcase className="h-3.5 w-3.5" />
                                         Développeur & Concepteur
@@ -412,7 +517,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 </div>
 
                                 {/* Right Side: Circular Glassmorphic Profile Pic */}
-                                <div className="lg:col-span-5 flex justify-center lg:justify-end">
+                                <div className="lg:col-span-5 flex justify-center lg:justify-end sr sr-right">
                                     <div className="relative group">
                                         {/* Glow effect */}
                                         <div className="absolute -inset-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-full blur-lg opacity-40 group-hover:opacity-60 transition duration-300" />
@@ -433,7 +538,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center">
+                            <div className="text-center sr sr-up">
                                 <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
                                     <Briefcase className="h-3.5 w-3.5" />
                                     Réalisations & Projets
@@ -475,7 +580,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 <section id="stats" className="py-12 border-y border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center divide-x divide-neutral-200 dark:divide-zinc-800">
-                            <div>
+                            <div className="sr sr-zoom sr-d1">
                                 <p className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 leading-none mb-2">
                                     {stats.enterprises_count}
                                 </p>
@@ -483,7 +588,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                     Entreprises recensées
                                 </p>
                             </div>
-                            <div>
+                            <div className="sr sr-zoom sr-d3">
                                 <p className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 leading-none mb-2">
                                     {stats.projects_finished}
                                 </p>
@@ -491,7 +596,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                     Chantiers terminés
                                 </p>
                             </div>
-                            <div className="col-span-2 md:col-span-1">
+                            <div className="col-span-2 md:col-span-1 sr sr-zoom sr-d5">
                                 <p className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 leading-none mb-2">
                                     {stats.projects_count - stats.projects_finished}
                                 </p>
@@ -510,7 +615,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             <div className="grid gap-16 lg:grid-cols-2">
                                 {/* Left: Skills */}
                                 {profile.skills && (
-                                    <div className="space-y-6">
+                                    <div className="space-y-6 sr sr-left">
                                         <h2 className="text-3xl font-extrabold tracking-tight">
                                             Mes Compétences
                                         </h2>
@@ -532,7 +637,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
 
                                 {/* Right: Education/Timeline */}
                                 {profile.education && (
-                                    <div className="space-y-6">
+                                    <div className="space-y-6 sr sr-right">
                                         <h2 className="text-3xl font-extrabold tracking-tight">
                                             Cursus & Expérience
                                         </h2>
@@ -568,7 +673,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 {/* ── PROJECTS PORTFOLIO ── */}
                 <section id="projects" className="py-20 md:py-28">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center max-w-3xl mx-auto mb-16">
+                        <div className="text-center max-w-3xl mx-auto mb-16 sr sr-up">
                             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
                                 Nos Projets Récents
                             </h2>
@@ -584,10 +689,10 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             </div>
                         ) : (
                             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {projects.map((project) => (
+                                {projects.map((project, idx) => (
                                     <article 
                                         key={project.id} 
-                                        className="group relative flex flex-col justify-between rounded-2xl border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px]"
+                                        className={`sr sr-up sr-d${Math.min(idx % 3 + 1, 6)} group relative flex flex-col justify-between rounded-2xl border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px]`}
                                     >
                                         <div className="p-6">
                                             {/* Badge status */}
@@ -658,7 +763,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 {/* ── PHOTO GALLERY ── */}
                 <section id="gallery" className="py-20 md:py-28 border-t border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center max-w-3xl mx-auto mb-16">
+                        <div className="text-center max-w-3xl mx-auto mb-16 sr sr-up">
                             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
                                 Galerie des Réalisations
                             </h2>
@@ -678,7 +783,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                     <div 
                                         key={item.id}
                                         onClick={() => openLightbox(idx)}
-                                        className="group relative rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 aspect-square cursor-zoom-in border border-neutral-200 dark:border-zinc-800 hover:border-indigo-500/50 shadow-xs hover:shadow-lg transition-all duration-300"
+                                        className={`sr sr-zoom sr-d${Math.min((idx % 4) + 1, 6)} group relative rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 aspect-square cursor-zoom-in border border-neutral-200 dark:border-zinc-800 hover:border-indigo-500/50 shadow-xs hover:shadow-lg transition-all duration-300`}
                                     >
                                         <img 
                                             src={`/storage/${item.image_item}`} 
@@ -709,7 +814,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 <section id="contact" className="py-20 md:py-28 border-t border-neutral-200 dark:border-zinc-800 bg-neutral-50/50 dark:bg-zinc-950">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-12 lg:grid-cols-2">
-                            <div>
+                            <div className="sr sr-left">
                                 <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
                                     Une question ? Un projet ?
                                 </h2>
@@ -757,7 +862,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             </div>
 
                             {/* Simple beautiful static contact form/mockup */}
-                            <div className="bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xs">
+                            <div className="sr sr-right bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xs">
                                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                                     <MessageSquare className="h-5 w-5 text-indigo-500" />
                                     Envoyer un message
@@ -776,16 +881,21 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                         </button>
                                     </div>
                                 ) : (
-                                    <form onSubmit={(e) => { e.preventDefault(); setFormSubmitted(true); }} className="space-y-4">
+                                    <form onSubmit={submitContact} className="space-y-4">
                                         <div className="grid gap-2">
                                             <label className="text-xs font-semibold" htmlFor="contact-name">Nom complet</label>
                                             <input 
                                                 id="contact-name" 
                                                 type="text" 
                                                 placeholder="Votre nom..." 
+                                                value={contactForm.data.name}
+                                                onChange={e => contactForm.setData('name', e.target.value)}
                                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-950"
                                                 required 
                                             />
+                                            {contactForm.errors.name && (
+                                                <p className="text-xs text-rose-500">{contactForm.errors.name}</p>
+                                            )}
                                         </div>
                                         <div className="grid gap-2">
                                             <label className="text-xs font-semibold" htmlFor="contact-email">Email</label>
@@ -793,9 +903,14 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                                 id="contact-email" 
                                                 type="email" 
                                                 placeholder="votre@email.com" 
+                                                value={contactForm.data.email}
+                                                onChange={e => contactForm.setData('email', e.target.value)}
                                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-950"
                                                 required 
                                             />
+                                            {contactForm.errors.email && (
+                                                <p className="text-xs text-rose-500">{contactForm.errors.email}</p>
+                                            )}
                                         </div>
                                         <div className="grid gap-2">
                                             <label className="text-xs font-semibold" htmlFor="contact-msg">Message</label>
@@ -803,16 +918,22 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                                 id="contact-msg" 
                                                 placeholder="Décrivez votre besoin..." 
                                                 rows={4}
+                                                value={contactForm.data.message}
+                                                onChange={e => contactForm.setData('message', e.target.value)}
                                                 className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-950"
                                                 required 
                                             />
+                                            {contactForm.errors.message && (
+                                                <p className="text-xs text-rose-500">{contactForm.errors.message}</p>
+                                            )}
                                         </div>
 
                                         <button 
                                             type="submit" 
-                                            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 font-semibold text-xs transition-colors shadow-md shadow-indigo-600/15"
+                                            disabled={contactForm.processing}
+                                            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 font-semibold text-xs transition-colors shadow-md shadow-indigo-600/15 disabled:opacity-50"
                                         >
-                                            Envoyer le message
+                                            {contactForm.processing ? 'Envoi...' : 'Envoyer le message'}
                                         </button>
                                     </form>
                                 )}
@@ -824,7 +945,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 {/* ── FOOTER ── */}
                 <footer className="border-t border-neutral-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 py-8">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
-                        <p>© {new Date().getFullYear()} LaraReact Maps. Tous droits réservés.</p>
+                        <p>© {new Date().getFullYear()} {profile?.name ?? 'Portfolio Pro'}. Tous droits réservés.</p>
                         <div className="flex gap-6">
                             <a href="#about" className="hover:text-foreground">À propos</a>
                             <a href="#projects" className="hover:text-foreground">Projets</a>
@@ -886,4 +1007,8 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             )}
                         </div>
                     </div>
-  
+                </div>
+            )}
+        </>
+    );
+}
