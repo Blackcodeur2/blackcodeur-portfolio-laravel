@@ -21,19 +21,20 @@ import {
 } from 'lucide-react';
 
 interface EnterpriseListItem {
-    id: number;
+    id: number | string;
     name: string;
 }
 
 interface ProjectItem {
     id: number;
-    enterprise_id: number;
+    enterprise_id: number | null;
     name: string;
     description?: string;
     is_finished: boolean;
     is_published: boolean;
     public_link?: string;
     github_link?: string;
+    logo?: string;
     enterprises?: EnterpriseListItem;
 }
 
@@ -59,26 +60,28 @@ export default function Projects({ projects, enterprises, filters }: Props) {
 
     // Inertia form for creation/updating
     const form = useForm({
-        enterprise_id: '',
+        enterprise_id: null as string | null,
         name: '',
         description: '',
         is_finished: false,
         is_published: true,
         public_link: '',
         github_link: '',
+        logo: '' as string,
     });
 
     // Populate form when editing
     useEffect(() => {
         if (editingProject) {
             form.setData({
-                enterprise_id: editingProject.enterprise_id.toString(),
+                enterprise_id: editingProject.enterprise_id ? editingProject.enterprise_id.toString() : null,
                 name: editingProject.name,
                 description: editingProject.description || '',
                 is_finished: editingProject.is_finished,
                 is_published: editingProject.is_published,
                 public_link: editingProject.public_link || '',
                 github_link: editingProject.github_link || '',
+                logo: editingProject.logo || '',
             });
         } else {
             form.reset();
@@ -151,13 +154,14 @@ export default function Projects({ projects, enterprises, filters }: Props) {
     // Toggle Project Status (Finished / Active)
     const handleToggleStatus = (project: ProjectItem) => {
         router.put(`/projects/${project.id}`, {
-            enterprise_id: project.enterprise_id,
+            enterprise_id: project.enterprise_id || null,
             name: project.name,
             description: project.description || '',
             is_finished: !project.is_finished,
             is_published: project.is_published,
             public_link: project.public_link || '',
             github_link: project.github_link || '',
+            logo: project.logo || '',
         }, {
             preserveScroll: true
         });
@@ -194,20 +198,19 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                         <DialogContent className="sm:max-w-[500px]">
                             <DialogHeader>
                                 <DialogTitle>Créer un Projet</DialogTitle>
-                                <DialogDescription>Lancer un projet de développement pour une entreprise recensée.</DialogDescription>
+                                <DialogDescription>Lancer un projet de développement, avec ou sans entreprise cliente.</DialogDescription>
                             </DialogHeader>
                             <form onSubmit={handleCreateSubmit} className="space-y-4 py-2">
                                 <div className="grid gap-4">
                                     <div className="grid gap-2">
-                                        <Label htmlFor="create-enterprise">Entreprise Cliente *</Label>
-                                        <select 
+                                        <Label htmlFor="create-enterprise">Entreprise Cliente</Label>
+                                        <select
                                             id="create-enterprise"
-                                            value={form.data.enterprise_id} 
-                                            onChange={e => form.setData('enterprise_id', e.target.value)}
+                                            value={form.data.enterprise_id || ''}
+                                            onChange={e => form.setData('enterprise_id', e.target.value || null)}
                                             className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-900"
-                                            required
                                         >
-                                            <option value="" disabled className="dark:bg-zinc-950">Sélectionner...</option>
+                                            <option value="" className="dark:bg-zinc-950">Aucune entreprise</option>
                                             {enterprises.map(ent => (
                                                 <option key={ent.id} value={ent.id} className="dark:bg-zinc-950">{ent.name}</option>
                                             ))}
@@ -242,6 +245,12 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                                         <Label htmlFor="create-github-link">Lien Repository GitHub</Label>
                                         <Input id="create-github-link" type="url" placeholder="https://github.com/..." value={form.data.github_link} onChange={e => form.setData('github_link', e.target.value)} />
                                         {form.errors.github_link && <p className="text-xs text-rose-500 mt-1">{form.errors.github_link}</p>}
+                                    </div>
+
+                                    <div className="grid gap-2">
+                                        <Label htmlFor="create-logo">URL du Logo</Label>
+                                        <Input id="create-logo" type="url" placeholder="https://..." value={form.data.logo} onChange={e => form.setData('logo', e.target.value)} />
+                                        {form.errors.logo && <p className="text-xs text-rose-500 mt-1">{form.errors.logo}</p>}
                                     </div>
 
                                     <div className="flex items-center gap-3 pt-2">
@@ -295,7 +304,7 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                             onChange={e => setEnterpriseId(e.target.value)}
                             className="flex h-9 w-full sm:w-1/2 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
                         >
-                            <option value="">Filtrer par entreprise cliente</option>
+                            <option value="">Toutes les entreprises</option>
                             {enterprises.map(ent => (
                                 <option key={ent.id} value={ent.id}>{ent.name}</option>
                             ))}
@@ -378,15 +387,14 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                         <form onSubmit={handleUpdateSubmit} className="space-y-4 py-2">
                             <div className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="edit-enterprise">Entreprise Cliente *</Label>
-                                    <select 
+                                    <Label htmlFor="edit-enterprise">Entreprise Cliente</Label>
+                                    <select
                                         id="edit-enterprise"
-                                        value={form.data.enterprise_id} 
-                                        onChange={e => form.setData('enterprise_id', e.target.value)}
+                                        value={form.data.enterprise_id || ''}
+                                        onChange={e => form.setData('enterprise_id', e.target.value || null)}
                                         className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-900"
-                                        required
                                     >
-                                        <option value="" disabled className="dark:bg-zinc-950">Sélectionner...</option>
+                                        <option value="" className="dark:bg-zinc-950">Aucune entreprise</option>
                                         {enterprises.map(ent => (
                                             <option key={ent.id} value={ent.id} className="dark:bg-zinc-950">{ent.name}</option>
                                         ))}
@@ -421,6 +429,12 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                                     <Label htmlFor="edit-github-link">Lien Repository GitHub</Label>
                                     <Input id="edit-github-link" type="url" value={form.data.github_link} onChange={e => form.setData('github_link', e.target.value)} />
                                     {form.errors.github_link && <p className="text-xs text-rose-500 mt-1">{form.errors.github_link}</p>}
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label htmlFor="edit-logo">URL du Logo</Label>
+                                    <Input id="edit-logo" type="url" placeholder="https://..." value={form.data.logo} onChange={e => form.setData('logo', e.target.value)} />
+                                    {form.errors.logo && <p className="text-xs text-rose-500 mt-1">{form.errors.logo}</p>}
                                 </div>
 
                                 <div className="flex items-center gap-3 pt-2">
@@ -462,20 +476,31 @@ function ProjectCard({ project, onEdit, onToggle, onDelete }: { project: Project
     return (
         <Card className="border-border/60 shadow-xs hover:border-primary/25 hover:shadow-sm transition-all duration-300 group">
             <CardContent className="p-4 space-y-3">
-                <div className="flex justify-between items-start gap-2">
-                    <h3 className="font-semibold text-base text-foreground leading-tight">{project.name}</h3>
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold shrink-0 ${
-                        project.is_published 
-                            ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400" 
-                            : "bg-neutral-500/10 text-neutral-600 dark:text-neutral-400"
-                    }`}>
-                        {project.is_published ? "Public" : "Brouillon"}
-                    </span>
-                </div>
+                <div className="flex items-start gap-3">
+                    {project.logo && (
+                        <img
+                            src={project.logo}
+                            alt={project.name}
+                            className="w-12 h-12 rounded-md object-cover shrink-0 border border-border/50"
+                        />
+                    )}
+                    <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start gap-2">
+                            <h3 className="font-semibold text-base text-foreground leading-tight">{project.name}</h3>
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-semibold shrink-0 ${
+                                project.is_published
+                                    ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400"
+                                    : "bg-neutral-500/10 text-neutral-600 dark:text-neutral-400"
+                            }`}>
+                                {project.is_published ? "Public" : "Brouillon"}
+                            </span>
+                        </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <Building2 className="h-3.5 w-3.5 shrink-0" />
-                    <span className="font-medium truncate">{project.enterprises?.name || 'Entreprise inconnue'}</span>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                            <Building2 className="h-3.5 w-3.5 shrink-0" />
+                            <span className="font-medium truncate">{project.enterprises?.name || 'Aucune entreprise'}</span>
+                        </div>
+                    </div>
                 </div>
 
                 {project.description && (

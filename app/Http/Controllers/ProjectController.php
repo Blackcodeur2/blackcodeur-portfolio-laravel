@@ -29,7 +29,11 @@ class ProjectController extends Controller
         }
 
         if ($request->filled('enterprise_id')) {
-            $query->where('enterprise_id', $request->input('enterprise_id'));
+            if ($request->input('enterprise_id') === 'none') {
+                $query->whereNull('enterprise_id');
+            } else {
+                $query->where('enterprise_id', $request->input('enterprise_id'));
+            }
         }
 
         if ($request->filled('status')) {
@@ -39,9 +43,12 @@ class ProjectController extends Controller
 
         $projects = $query->latest()->get();
 
+        $enterprises = Enterprise::select('id', 'name')->get();
+        $enterprises->prepend((object)['id' => 'none', 'name' => 'Sans entreprise']);
+
         return Inertia::render('projects', [
             'projects' => $projects,
-            'enterprises' => Enterprise::select('id', 'name')->get(),
+            'enterprises' => $enterprises,
             'filters' => $request->only(['search', 'enterprise_id', 'status']),
         ]);
     }
@@ -103,13 +110,14 @@ class ProjectController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'enterprise_id' => 'required|exists:enterprises,id',
+            'enterprise_id' => 'nullable|exists:enterprises,id',
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string',
             'is_finished'   => 'required|boolean',
             'is_published'  => 'required|boolean',
             'public_link'   => 'nullable|url|max:255',
             'github_link'   => 'nullable|url|max:255',
+            'logo'          => 'nullable|string|max:255',
         ]);
 
         Project::create($validated);
@@ -127,13 +135,14 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project): RedirectResponse
     {
         $validated = $request->validate([
-            'enterprise_id' => 'required|exists:enterprises,id',
+            'enterprise_id' => 'nullable|exists:enterprises,id',
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string',
             'is_finished'   => 'required|boolean',
             'is_published'  => 'required|boolean',
             'public_link'   => 'nullable|url|max:255',
             'github_link'   => 'nullable|url|max:255',
+            'logo'          => 'nullable|string|max:255',
         ]);
 
         $project->update($validated);

@@ -31,6 +31,7 @@ interface Project {
     is_finished: boolean;
     public_link?: string;
     github_link?: string;
+    logo?: string;
     enterprises?: {
         name: string;
         address: string;
@@ -412,8 +413,8 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-600/20">
                                 <Layers className="h-5 w-5 text-white" />
                             </div>
-                            <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">
-                                LaraReact Maps
+                            <span className="font-extrabold text-lg tracking-tight bg-linear-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">
+                                Portfolio-Nguefack
                             </span>
                         </div>
 
@@ -472,7 +473,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 </header>
 
                 {/* ── HERO SECTION ── */}
-                <section id="about" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-indigo-500/5 via-transparent to-transparent">
+                <section id="about" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-linear-to-b from-indigo-500/5 via-transparent to-transparent">
                     {/* Decorative Background Blobs */}
                     <div className="absolute top-20 right-0 -z-10 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl" />
                     <div className="absolute top-40 left-10 -z-10 h-64 w-64 rounded-full bg-violet-600/5 blur-3xl" />
@@ -482,14 +483,14 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             <div className="grid gap-12 lg:grid-cols-12 items-center text-left">
                                 {/* Left Side: Text Details */}
                                 <div className="lg:col-span-7 space-y-6 sr sr-left">
-                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 px-3 py-3 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
                                         <Briefcase className="h-3.5 w-3.5" />
-                                        Développeur & Concepteur
+                                        Développeur Fullstack
                                     </span>
                                     
                                     <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none">
                                         Bonjour, je suis<br />
-                                        <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
+                                        <span className="bg-linear-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
                                             {profile.name}
                                         </span>
                                     </h1>
@@ -501,7 +502,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
                                         <a
                                             href="#projects"
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200"
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:translate-y-[px] active:translate-y-0 transition-all duration-200"
                                         >
                                             Voir mes projets
                                             <ArrowRight className="h-4 w-4" />
@@ -520,7 +521,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 <div className="lg:col-span-5 flex justify-center lg:justify-end sr sr-right">
                                     <div className="relative group">
                                         {/* Glow effect */}
-                                        <div className="absolute -inset-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 rounded-full blur-lg opacity-40 group-hover:opacity-60 transition duration-300" />
+                                        <div className="absolute -inset-1.5 bg-linear-to-r from-indigo-600 to-violet-600 rounded-full blur-lg opacity-40 group-hover:opacity-60 transition duration-300" />
                                         <div className="relative h-64 w-64 sm:h-80 sm:w-80 rounded-full overflow-hidden border-4 border-white dark:border-zinc-900 shadow-2xl bg-neutral-100 dark:bg-zinc-800">
                                             {profile.profile_picture ? (
                                                 <img
@@ -546,7 +547,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 
                                 <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none mb-6">
                                     Suivi des Chantiers &<br />
-                                    <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
+                                    <span className="bg-linear-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
                                         Projets Entreprises
                                     </span>
                                 </h1>
@@ -558,7 +559,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                                     <a
                                         href="#projects"
-                                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:translate-y-[-1px] active:translate-y-0 transition-all duration-200"
+                                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:translate-y-[px] active:translate-y-0 transition-all duration-200"
                                     >
                                         Voir les projets
                                         <ArrowRight className="h-4 w-4" />
@@ -649,7 +650,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                                 return (
                                                     <div key={idx} className="relative group">
                                                         {/* Icon/Bullet */}
-                                                        <div className="absolute -left-[31px] top-1.5 h-3.5 w-3.5 rounded-full border-2 border-indigo-600 bg-white dark:bg-zinc-950 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-400 transition-colors duration-200" />
+                                                        <div className="absolute -left-7.75 top-1.5 h-3.5 w-3.5 rounded-full border-2 border-indigo-600 bg-white dark:bg-zinc-950 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-400 transition-colors duration-200" />
                                                         
                                                         {time && (
                                                             <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1 tracking-wider uppercase">
@@ -690,10 +691,19 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                         ) : (
                             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                                 {projects.map((project, idx) => (
-                                    <article 
-                                        key={project.id} 
-                                        className={`sr sr-up sr-d${Math.min(idx % 3 + 1, 6)} group relative flex flex-col justify-between rounded-2xl border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 hover:translate-y-[-2px]`}
+                                    <article
+                                        key={project.id}
+                                        className={`sr sr-up sr-d${Math.min(idx % 3 + 1, 6)} group relative flex flex-col justify-between rounded-2xl border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 hover:translate-y-[0.5]`}
                                     >
+                                        {project.logo && (
+                                            <div className="relative h-48 w-full bg-neutral-100 dark:bg-zinc-800">
+                                                <img
+                                                    src={project.logo}
+                                                    alt={project.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        )}
                                         <div className="p-6">
                                             {/* Badge status */}
                                             <div className="flex items-center justify-between mb-4">
@@ -791,7 +801,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             loading="lazy"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-4">
+                                        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-4">
                                             {item.project && (
                                                 <p className="text-white text-xs font-semibold truncate">
                                                     {item.project.name}

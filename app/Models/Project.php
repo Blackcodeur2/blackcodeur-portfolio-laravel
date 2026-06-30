@@ -19,6 +19,7 @@ class Project extends Model
         'is_published',
         'public_link',
         'github_link',
+        'logo',
     ];
 
     protected $casts = [
@@ -28,7 +29,7 @@ class Project extends Model
 
     public function enterprises(): BelongsTo
     {
-        return $this->belongsTo(Enterprise::class);
+        return $this->belongsTo(Enterprise::class)->withDefault();
     }
 
     public function projectGaleries(): HasMany
