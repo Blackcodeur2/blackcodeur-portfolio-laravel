@@ -117,8 +117,12 @@ class ProjectController extends Controller
             'is_published'  => 'required|boolean',
             'public_link'   => 'nullable|url|max:255',
             'github_link'   => 'nullable|url|max:255',
-            'logo'          => 'nullable|string|max:255',
+            'logo'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('projects', 'public');
+        }
 
         Project::create($validated);
 
@@ -142,8 +146,15 @@ class ProjectController extends Controller
             'is_published'  => 'required|boolean',
             'public_link'   => 'nullable|url|max:255',
             'github_link'   => 'nullable|url|max:255',
-            'logo'          => 'nullable|string|max:255',
+            'logo'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('logo')) {
+            if ($project->logo) {
+                \Storage::disk('public')->delete($project->logo);
+            }
+            $validated['logo'] = $request->file('logo')->store('projects', 'public');
+        }
 
         $project->update($validated);
 

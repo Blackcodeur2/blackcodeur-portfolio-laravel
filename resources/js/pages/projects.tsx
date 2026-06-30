@@ -67,7 +67,7 @@ export default function Projects({ projects, enterprises, filters }: Props) {
         is_published: true,
         public_link: '',
         github_link: '',
-        logo: '' as string,
+        logo: null as File | null,
     });
 
     // Populate form when editing
@@ -81,7 +81,7 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                 is_published: editingProject.is_published,
                 public_link: editingProject.public_link || '',
                 github_link: editingProject.github_link || '',
-                logo: editingProject.logo || '',
+                logo: null,
             });
         } else {
             form.reset();
@@ -133,6 +133,7 @@ export default function Projects({ projects, enterprises, filters }: Props) {
     const handleCreateSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         form.post('/projects', {
+            forceFormData: true,
             onSuccess: () => {
                 setIsCreateOpen(false);
                 form.reset();
@@ -145,6 +146,21 @@ export default function Projects({ projects, enterprises, filters }: Props) {
         e.preventDefault();
         if (!editingProject) return;
         form.put(`/projects/${editingProject.id}`, {
+            transform: (data) => {
+                const formData = new FormData();
+                formData.append('enterprise_id', data.enterprise_id || '');
+                formData.append('name', data.name || '');
+                formData.append('description', data.description || '');
+                formData.append('is_finished', data.is_finished ? '1' : '0');
+                formData.append('is_published', data.is_published ? '1' : '0');
+                formData.append('public_link', data.public_link || '');
+                formData.append('github_link', data.github_link || '');
+                if (data.logo) {
+                    formData.append('logo', data.logo);
+                }
+                formData.append('_method', 'PUT');
+                return formData;
+            },
             onSuccess: () => {
                 setEditingProject(null);
             }
@@ -195,14 +211,14 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                                 Nouveau projet
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="sm:max-w-[500px]">
+                        <DialogContent className="sm:max-w-[600px]">
                             <DialogHeader>
                                 <DialogTitle>Créer un Projet</DialogTitle>
                                 <DialogDescription>Lancer un projet de développement, avec ou sans entreprise cliente.</DialogDescription>
                             </DialogHeader>
                             <form onSubmit={handleCreateSubmit} className="space-y-4 py-2">
-                                <div className="grid gap-4">
-                                    <div className="grid gap-2">
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    <div className="grid gap-2 sm:col-span-2">
                                         <Label htmlFor="create-enterprise">Entreprise Cliente</Label>
                                         <select
                                             id="create-enterprise"
@@ -218,42 +234,48 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                                         {form.errors.enterprise_id && <p className="text-xs text-rose-500 mt-1">{form.errors.enterprise_id}</p>}
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-2 sm:col-span-2">
                                         <Label htmlFor="create-name">Nom du projet *</Label>
                                         <Input id="create-name" value={form.data.name} onChange={e => form.setData('name', e.target.value)} required />
                                         {form.errors.name && <p className="text-xs text-rose-500 mt-1">{form.errors.name}</p>}
                                     </div>
 
-                                    <div className="grid gap-2">
+                                    <div className="grid gap-2 sm:col-span-2">
                                         <Label htmlFor="create-desc">Description</Label>
-                                        <textarea 
-                                            id="create-desc" 
-                                            rows={3} 
-                                            value={form.data.description} 
+                                        <textarea
+                                            id="create-desc"
+                                            rows={3}
+                                            value={form.data.description}
                                             onChange={e => form.setData('description', e.target.value)}
                                             className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-900"
                                         />
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="create-public-link">Lien public (production/site)</Label>
+                                        <Label htmlFor="create-public-link">Lien public</Label>
                                         <Input id="create-public-link" type="url" placeholder="https://..." value={form.data.public_link} onChange={e => form.setData('public_link', e.target.value)} />
                                         {form.errors.public_link && <p className="text-xs text-rose-500 mt-1">{form.errors.public_link}</p>}
                                     </div>
 
                                     <div className="grid gap-2">
-                                        <Label htmlFor="create-github-link">Lien Repository GitHub</Label>
+                                        <Label htmlFor="create-github-link">Lien GitHub</Label>
                                         <Input id="create-github-link" type="url" placeholder="https://github.com/..." value={form.data.github_link} onChange={e => form.setData('github_link', e.target.value)} />
                                         {form.errors.github_link && <p className="text-xs text-rose-500 mt-1">{form.errors.github_link}</p>}
                                     </div>
 
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="create-logo">URL du Logo</Label>
-                                        <Input id="create-logo" type="url" placeholder="https://..." value={form.data.logo} onChange={e => form.setData('logo', e.target.value)} />
+                                    <div className="grid gap-2 sm:col-span-2">
+                                        <Label htmlFor="create-logo">Logo du projet</Label>
+                                        <Input
+                                            id="create-logo"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={e => form.setData('logo', e.target.files?.[0] || null)}
+                                            className="cursor-pointer"
+                                        />
                                         {form.errors.logo && <p className="text-xs text-rose-500 mt-1">{form.errors.logo}</p>}
                                     </div>
 
-                                    <div className="flex items-center gap-3 pt-2">
+                                    <div className="flex items-center gap-3 pt-2 sm:col-span-2">
                                         <input 
                                             id="create-is-finished"
                                             type="checkbox" 
@@ -379,14 +401,14 @@ export default function Projects({ projects, enterprises, filters }: Props) {
 
                 {/* Edit Modal */}
                 <Dialog open={editingProject !== null} onOpenChange={open => !open && setEditingProject(null)}>
-                    <DialogContent className="sm:max-w-[500px]">
+                    <DialogContent className="sm:max-w-[600px]">
                         <DialogHeader>
                             <DialogTitle>Modifier le Projet</DialogTitle>
                             <DialogDescription>Mettre à jour les informations ou les liens de production.</DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleUpdateSubmit} className="space-y-4 py-2">
-                            <div className="grid gap-4">
-                                <div className="grid gap-2">
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <div className="grid gap-2 sm:col-span-2">
                                     <Label htmlFor="edit-enterprise">Entreprise Cliente</Label>
                                     <select
                                         id="edit-enterprise"
@@ -402,42 +424,37 @@ export default function Projects({ projects, enterprises, filters }: Props) {
                                     {form.errors.enterprise_id && <p className="text-xs text-rose-500 mt-1">{form.errors.enterprise_id}</p>}
                                 </div>
 
-                                <div className="grid gap-2">
+                                <div className="grid gap-2 sm:col-span-2">
                                     <Label htmlFor="edit-name">Nom du projet *</Label>
                                     <Input id="edit-name" value={form.data.name} onChange={e => form.setData('name', e.target.value)} required />
                                     {form.errors.name && <p className="text-xs text-rose-500 mt-1">{form.errors.name}</p>}
                                 </div>
 
-                                <div className="grid gap-2">
+                                <div className="grid gap-2 sm:col-span-2">
                                     <Label htmlFor="edit-desc">Description</Label>
-                                    <textarea 
-                                        id="edit-desc" 
-                                        rows={3} 
-                                        value={form.data.description} 
+                                    <textarea
+                                        id="edit-desc"
+                                        rows={3}
+                                        value={form.data.description}
                                         onChange={e => form.setData('description', e.target.value)}
                                         className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-900"
                                     />
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="edit-public-link">Lien public (production/site)</Label>
+                                    <Label htmlFor="edit-public-link">Lien public</Label>
                                     <Input id="edit-public-link" type="url" value={form.data.public_link} onChange={e => form.setData('public_link', e.target.value)} />
                                     {form.errors.public_link && <p className="text-xs text-rose-500 mt-1">{form.errors.public_link}</p>}
                                 </div>
 
                                 <div className="grid gap-2">
-                                    <Label htmlFor="edit-github-link">Lien Repository GitHub</Label>
+                                    <Label htmlFor="edit-github-link">Lien GitHub</Label>
                                     <Input id="edit-github-link" type="url" value={form.data.github_link} onChange={e => form.setData('github_link', e.target.value)} />
                                     {form.errors.github_link && <p className="text-xs text-rose-500 mt-1">{form.errors.github_link}</p>}
                                 </div>
 
-                                <div className="grid gap-2">
-                                    <Label htmlFor="edit-logo">URL du Logo</Label>
-                                    <Input id="edit-logo" type="url" placeholder="https://..." value={form.data.logo} onChange={e => form.setData('logo', e.target.value)} />
-                                    {form.errors.logo && <p className="text-xs text-rose-500 mt-1">{form.errors.logo}</p>}
-                                </div>
-
-                                <div className="flex items-center gap-3 pt-2">
+                                
+                                <div className="flex items-center gap-3 pt-2 sm:col-span-2">
                                     <input 
                                         id="edit-is-finished"
                                         type="checkbox" 
@@ -479,7 +496,7 @@ function ProjectCard({ project, onEdit, onToggle, onDelete }: { project: Project
                 <div className="flex items-start gap-3">
                     {project.logo && (
                         <img
-                            src={project.logo}
+                            src={`/storage/${project.logo}`}
                             alt={project.name}
                             className="w-12 h-12 rounded-md object-cover shrink-0 border border-border/50"
                         />

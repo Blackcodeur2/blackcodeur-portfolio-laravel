@@ -171,7 +171,7 @@ export default function Gallery({ galleries, projects }: Props) {
                 <div className="flex flex-col gap-1">
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">Galerie des Projets</h1>
                     <p className="text-muted-foreground">
-                        Centralisez et visualisez les visuels de vos chantiers et réalisations.
+                        Centralisez et visualisez les visuels de vos projets et réalisations.
                     </p>
                 </div>
 
