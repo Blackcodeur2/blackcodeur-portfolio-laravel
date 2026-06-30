@@ -17,17 +17,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
+            'name' => 'Nguefack Azapmo Patrick Evrard',
+            'email' => 'nguefackpatrick2004@gmail.com',
+            'password' => bcrypt('Nguefack17232@'),
         ]);
 
         Profile::create([
             'user_id' => $user->id,
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'telephone' => '+33 6 12 34 56 78',
-            'birth_date' => '1995-05-15',
+            'name' => 'Nguefack Azapmo Patrick Evrard',
+            'email' => 'nguefackpatrick2004@gmail.com',
+            'telephone' => '+237 6 58 13 51 05',
+            'birth_date' => '2004-06-21',
             'sexe' => 'M',
             'profile_picture' => 'profiles/default.jpg',
         ]);
