@@ -453,9 +453,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                     <ArrowRight className="h-3.5 w-3.5" />
                                 </Link>
                             ) : (
-                                <>
-                                    
-                                </>
+                                <></>
                             )}
                         </div>
                     </div>
