@@ -19,6 +19,8 @@ return new class extends Migration
             $table->boolean("is_finished")->default(false);
             $table->string("public_link")->nullable();
             $table->string("github_link")->nullable();
+             $table->boolean('is_published')->default(true);
+              $table->string('logo')->nullable();
             $table->timestamps();
         });
     }

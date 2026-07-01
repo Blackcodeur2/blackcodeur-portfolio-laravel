@@ -19,7 +19,10 @@ return new class extends Migration
             $table->string("telephone");
             $table->date("birth_date");
             $table->enum("sexe",['M', 'F']);
-            $table->string("profile_picture");
+            $table->text('bio')->nullable();
+            $table->text('skills')->nullable();
+            $table->text('education')->nullable();
+            $table->string('profile_picture')->nullable();
             $table->timestamps();
         });
     }
