@@ -43,7 +43,7 @@ class ProjectGalleryController extends Controller
 
         $filePath = null;
         if ($request->hasFile('image_item')) {
-            $filePath = $request->file('image_item')->store('gallery', 'public');
+            $filePath = $request->file('image_item')->store('gallery', 'vercel');
         }
 
         ProjectGallery::create([

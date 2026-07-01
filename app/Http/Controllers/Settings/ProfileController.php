@@ -71,7 +71,7 @@ class ProfileController extends Controller
             if ($profile && $profile->profile_picture) {
                 Storage::disk('vercel')->delete($profile->profile_picture);
             }
-            $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'public');
+            $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'vercel');
         }
 
         $request->user()->profile()->updateOrCreate(

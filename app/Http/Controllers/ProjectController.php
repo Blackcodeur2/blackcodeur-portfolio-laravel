@@ -121,7 +121,7 @@ class ProjectController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('projects', 'public');
+            $validated['logo'] = $request->file('logo')->store('projects', 'vercel');
         }
 
         Project::create($validated);
@@ -153,7 +153,7 @@ class ProjectController extends Controller
             if ($project->logo) {
                 \Storage::disk('vercel')->delete($project->logo);
             }
-            $validated['logo'] = $request->file('logo')->store('projects', 'public');
+            $validated['logo'] = $request->file('logo')->store('projects', 'vercel');
         }
 
         $project->update($validated);

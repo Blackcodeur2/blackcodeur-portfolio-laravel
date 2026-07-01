@@ -43,7 +43,7 @@ class DevisController extends Controller
 
         $filePath = null;
         if ($request->hasFile('document')) {
-            $filePath = $request->file('document')->store('devis', 'public');
+            $filePath = $request->file('document')->store('devis', 'vercel');
         }
 
         Devis::create([
