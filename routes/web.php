@@ -13,7 +13,7 @@ use App\Models\ProjectGallery;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/migrate', function () {
-    \Artisan::call(' db:seed --class=DatabaseSeeder');
+    \Artisan::call('db:seed');
     return 'Database migrated and seeded successfully!';
 })->name('migrate');
 
