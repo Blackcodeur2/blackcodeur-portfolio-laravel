@@ -12,6 +12,12 @@ use App\Models\Project;
 use App\Models\ProjectGallery;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/migrate', function () {
+    \Artisan::call(' db:seed --class=DatabaseSeeder');
+    return 'Database migrated and seeded successfully!';
+})->name('migrate');
+
+
 Route::get('/', function () {
     $projects = Project::where('is_published', true)->with(['enterprises'])->latest()->take(6)->get();
     $gallery = ProjectGallery::whereHas('project', function ($query) {
