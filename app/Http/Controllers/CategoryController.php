@@ -62,7 +62,7 @@ class CategoryController extends Controller
     }
 
     /**
-     * Remove the specified category from storage.
+     * Remove the specified category from storage. udfhsfsdf
      */
     public function destroy(Category $category): RedirectResponse
     {
