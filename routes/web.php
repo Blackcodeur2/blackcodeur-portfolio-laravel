@@ -10,6 +10,7 @@ use App\Models\Enterprise;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\ProjectGallery;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/migrate', function () {
