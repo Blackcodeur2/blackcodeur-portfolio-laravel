@@ -37,6 +37,11 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'vercel' => [
+            'driver' => 'vercel',
+            'token' => env('BLOB_READ_WRITE_TOKEN'),
+            'url' => env('VERCEL_BLOB_URL'),
+        ],
 
         'public' => [
             'driver' => 'local',

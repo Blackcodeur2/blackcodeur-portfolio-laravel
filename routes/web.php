@@ -22,7 +22,7 @@ Route::get('/', function () {
     $projects = Project::where('is_published', true)->with(['enterprises'])->latest()->take(6)->get();
     $gallery = ProjectGallery::whereHas('project', function ($query) {
         $query->where('is_published', true);
-    })->with('project')->latest()->take(8)->get();
+    })->with('project')->latest()->take(10)->get();
 
     $stats = [
         'enterprises_count' => Enterprise::count(),

@@ -151,7 +151,7 @@ class ProjectController extends Controller
 
         if ($request->hasFile('logo')) {
             if ($project->logo) {
-                \Storage::disk('public')->delete($project->logo);
+                \Storage::disk('vercel')->delete($project->logo);
             }
             $validated['logo'] = $request->file('logo')->store('projects', 'public');
         }

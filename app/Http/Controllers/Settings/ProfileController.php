@@ -69,7 +69,7 @@ class ProfileController extends Controller
         if ($request->hasFile('profile_picture')) {
             // Delete old picture if exists
             if ($profile && $profile->profile_picture) {
-                Storage::disk('public')->delete($profile->profile_picture);
+                Storage::disk('vercel')->delete($profile->profile_picture);
             }
             $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'public');
         }

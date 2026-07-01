@@ -63,8 +63,8 @@ class DevisController extends Controller
      */
     public function destroy(Devis $devis): RedirectResponse
     {
-        if ($devis->document && Storage::disk('public')->exists($devis->document)) {
-            Storage::disk('public')->delete($devis->document);
+        if ($devis->document && Storage::disk('vercel')->exists($devis->document)) {
+            Storage::disk('vercel')->delete($devis->document);
         }
 
         $devis->delete();

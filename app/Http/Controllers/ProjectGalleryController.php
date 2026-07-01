@@ -63,8 +63,8 @@ class ProjectGalleryController extends Controller
      */
     public function destroy(ProjectGallery $gallery): RedirectResponse
     {
-        if ($gallery->image_item && Storage::disk('public')->exists($gallery->image_item)) {
-            Storage::disk('public')->delete($gallery->image_item);
+        if ($gallery->image_item && Storage::disk('vercel')->exists($gallery->image_item)) {
+            Storage::disk('vercel')->delete($gallery->image_item);
         }
 
         $gallery->delete();
