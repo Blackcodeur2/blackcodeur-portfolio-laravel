@@ -40,7 +40,7 @@ interface GalleryItem {
     id: number;
     project_id: number;
     description: string | null;
-    image_item: string;
+    image_item_url: string;
     created_at: string;
     project?: {
         id: number;
@@ -366,7 +366,7 @@ export default function Gallery({ galleries, projects }: Props) {
                                         className="group relative rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800/50 aspect-square cursor-zoom-in border border-border/40 hover:border-indigo-400/60 transition-all duration-200 shadow-xs hover:shadow-md"
                                     >
                                         <img
-                                            src={`/storage/${item.image_item}`}
+                                            src={item.image_item_url}
                                             alt={item.description ?? `Image ${item.id}`}
                                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             onClick={() => openLightbox(idx)}
@@ -460,7 +460,7 @@ export default function Gallery({ galleries, projects }: Props) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <img
-                            src={`/storage/${currentLightboxItem.image_item}`}
+                            src={currentLightboxItem.image_item_url}
                             alt={currentLightboxItem.description ?? 'Image'}
                             className="max-h-[72vh] max-w-full object-contain rounded-lg shadow-2xl"
                         />

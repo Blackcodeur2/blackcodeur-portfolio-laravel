@@ -10,7 +10,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,7 +22,7 @@ class ProfileController extends Controller
     {
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status'          => $request->session()->get('status'),
+            'status' => $request->session()->get('status'),
             'portfolioProfile' => $request->user()->profile,
         ]);
     }
@@ -52,26 +51,23 @@ class ProfileController extends Controller
     public function updatePortfolio(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'            => ['required', 'string', 'max:255'],
-            'email'           => ['required', 'email', 'max:255'],
-            'telephone'       => ['required', 'string', 'max:50'],
-            'birth_date'      => ['required', 'date'],
-            'sexe'            => ['required', 'in:M,F'],
-            'bio'             => ['nullable', 'string', 'max:1000'],
-            'skills'          => ['nullable', 'string', 'max:1000'],
-            'education'       => ['nullable', 'string', 'max:2000'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'telephone' => ['required', 'string', 'max:50'],
+            'birth_date' => ['required', 'date'],
+            'sexe' => ['required', 'in:M,F'],
+            'bio' => ['nullable', 'string', 'max:1000'],
+            'skills' => ['nullable', 'string', 'max:1000'],
+            'education' => ['nullable', 'string', 'max:2000'],
             'profile_picture' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        /** @var \App\Models\Profile|null $profile */
-        $profile = $request->user()->profile;
-
         if ($request->hasFile('profile_picture')) {
-            // Delete old picture if exists
+            $profile = $request->user()->profile;
             if ($profile && $profile->profile_picture) {
-                Storage::disk('vercel')->delete($profile->profile_picture);
+                Storage::disk('supabase')->delete($profile->profile_picture);
             }
-            $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'vercel');
+            $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'supabase');
         }
 
         $request->user()->profile()->updateOrCreate(

@@ -25,7 +25,9 @@ interface PortfolioProfile {
     birth_date: string;
     sexe: 'M' | 'F';
     bio: string | null;
-    profile_picture: string | null;
+    profile_picture_url: string | null;
+    skills: string | null;
+    education: string | null;
 }
 
 export default function Profile({
@@ -41,7 +43,7 @@ export default function Profile({
 
     // Portfolio profile form state
     const [avatarPreview, setAvatarPreview] = useState<string | null>(
-        portfolioProfile?.profile_picture ? `/storage/${portfolioProfile.profile_picture}` : null,
+        portfolioProfile?.profile_picture_url ? portfolioProfile.profile_picture_url : null,
     );
     const [portfolioData, setPortfolioData] = useState({
         name: portfolioProfile?.name ?? auth.user.name,

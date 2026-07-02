@@ -10,7 +10,6 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Filesystem\FilesystemAdapter as LaravelFilesystemAdapter;
 use League\Flysystem\Filesystem;
-use App\Filesystem\VercelBlobAdapter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,12 +27,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
-
-        Storage::extend('vercel', function ($app, $config) {
-            $adapter = new VercelBlobAdapter($config['token'], $config['url']);
-
-            return new LaravelFilesystemAdapter(new Filesystem($adapter), $adapter, $config);
-        });
     }
 
     /**

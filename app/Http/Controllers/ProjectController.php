@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Devis;
 use App\Models\Enterprise;
 use App\Models\Project;
-use App\Models\Devis;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Response as InertiaResponse;
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return InertiaResponse
      */
     public function index(Request $request): InertiaResponse
     {
@@ -25,7 +23,7 @@ class ProjectController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%");
         }
 
         if ($request->filled('enterprise_id')) {
@@ -44,7 +42,7 @@ class ProjectController extends Controller
         $projects = $query->latest()->get();
 
         $enterprises = Enterprise::select('id', 'name')->get();
-        $enterprises->prepend((object)['id' => 'none', 'name' => 'Sans entreprise']);
+        $enterprises->prepend((object) ['id' => 'none', 'name' => 'Sans entreprise']);
 
         return Inertia::render('projects', [
             'projects' => $projects,
@@ -55,8 +53,6 @@ class ProjectController extends Controller
 
     /**
      * Display the dashboard statistics.
-     *
-     * @return InertiaResponse
      */
     public function dashboard(): InertiaResponse
     {
@@ -103,25 +99,22 @@ class ProjectController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'enterprise_id' => 'nullable|exists:enterprises,id',
-            'name'          => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'is_finished'   => 'required|boolean',
-            'is_published'  => 'required|boolean',
-            'public_link'   => 'nullable|url|max:255',
-            'github_link'   => 'nullable|url|max:255',
-            'logo'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_finished' => 'required|boolean',
+            'is_published' => 'required|boolean',
+            'public_link' => 'nullable|url|max:255',
+            'github_link' => 'nullable|url|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {
-            $validated['logo'] = $request->file('logo')->store('projects', 'vercel');
+            $validated['logo'] = $request->file('logo')->store('projects', 'supabase');
         }
 
         Project::create($validated);
@@ -131,29 +124,25 @@ class ProjectController extends Controller
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Project $project
-     * @return RedirectResponse
      */
     public function update(Request $request, Project $project): RedirectResponse
     {
         $validated = $request->validate([
             'enterprise_id' => 'nullable|exists:enterprises,id',
-            'name'          => 'required|string|max:255',
-            'description'   => 'nullable|string',
-            'is_finished'   => 'required|boolean',
-            'is_published'  => 'required|boolean',
-            'public_link'   => 'nullable|url|max:255',
-            'github_link'   => 'nullable|url|max:255',
-            'logo'          => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'is_finished' => 'required|boolean',
+            'is_published' => 'required|boolean',
+            'public_link' => 'nullable|url|max:255',
+            'github_link' => 'nullable|url|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {
             if ($project->logo) {
-                \Storage::disk('vercel')->delete($project->logo);
+                Storage::disk('supabase')->delete($project->logo);
             }
-            $validated['logo'] = $request->file('logo')->store('projects', 'vercel');
+            $validated['logo'] = $request->file('logo')->store('projects', 'supabase');
         }
 
         $project->update($validated);
@@ -163,12 +152,13 @@ class ProjectController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param Project $project
-     * @return RedirectResponse
      */
     public function destroy(Project $project): RedirectResponse
     {
+        if ($project->logo) {
+            Storage::disk('supabase')->delete($project->logo);
+        }
+
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Projet supprimé avec succès.');

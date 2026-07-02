@@ -31,7 +31,7 @@ interface Project {
     is_finished: boolean;
     public_link?: string;
     github_link?: string;
-    logo?: string;
+    logo_url?: string;
     enterprises?: {
         name: string;
         address: string;
@@ -512,7 +512,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                         <div className="relative h-64 w-64 sm:h-80 sm:w-80 rounded-full overflow-hidden border-4 border-white dark:border-zinc-900 shadow-2xl bg-neutral-100 dark:bg-zinc-800">
                                             {profile.profile_picture ? (
                                                 <img
-                                                    src={`/storage/${profile.profile_picture}`}
+                                                    src={profile.profile_picture}
                                                     alt={profile.name}
                                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                 />
@@ -686,10 +686,10 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                             {/* Header: icône + badge */}
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-3">
-                                                    {project.logo ? (
+                                                    {project.logo_url ? (
                                                         <div className="h-10 w-10 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-800 flex items-center justify-center shrink-0 overflow-hidden">
                                                             <img
-                                                                src={`/storage/${project.logo}`}
+                                                                src={project.logo_url}
                                                                 alt={project.name}
                                                                 className="h-full w-full object-contain p-1"
                                                             />
@@ -790,7 +790,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                         className={`sr sr-zoom sr-d${Math.min((idx % 4) + 1, 6)} group relative rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 aspect-square cursor-zoom-in border border-neutral-200 dark:border-zinc-800 hover:border-indigo-500/50 shadow-xs hover:shadow-lg transition-all duration-300`}
                                     >
                                         <img
-                                            src={`/storage/${item.image_item}`}
+                                            src={item.image_item}
                                             alt={item.description ?? 'Réalisation'}
                                             className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
                                             loading="lazy"
@@ -998,7 +998,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                         onClick={e => e.stopPropagation()}
                     >
                         <img
-                            src={`/storage/${gallery[lightboxIndex].image_item}`}
+                            src={gallery[lightboxIndex].image_item}
                             alt={gallery[lightboxIndex].description ?? 'Réalisation'}
                             className="max-h-[72vh] max-w-full object-contain rounded-lg shadow-2xl"
                         />

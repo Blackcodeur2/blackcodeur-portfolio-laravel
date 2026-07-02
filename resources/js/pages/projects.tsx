@@ -1,3 +1,5 @@
+/* eslint-disable curly */
+/* eslint-disable @stylistic/padding-line-between-statements */
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -34,7 +36,7 @@ interface ProjectItem {
     is_published: boolean;
     public_link?: string;
     github_link?: string;
-    logo?: string;
+    logo_url?: string;
     enterprises?: EnterpriseListItem;
 }
 
@@ -177,7 +179,7 @@ export default function Projects({ projects, enterprises, filters }: Props) {
             is_published: project.is_published,
             public_link: project.public_link || '',
             github_link: project.github_link || '',
-            logo: project.logo || '',
+            logo: project.logo_url || '',
         }, {
             preserveScroll: true
         });
@@ -494,9 +496,9 @@ function ProjectCard({ project, onEdit, onToggle, onDelete }: { project: Project
         <Card className="border-border/60 shadow-xs hover:border-primary/25 hover:shadow-sm transition-all duration-300 group">
             <CardContent className="p-4 space-y-3">
                 <div className="flex items-start gap-3">
-                    {project.logo && (
+                    {project.logo_url && (
                         <img
-                            src={`/storage/${project.logo}`}
+                            src={project.logo_url}
                             alt={project.name}
                             className="w-12 h-12 rounded-md object-cover shrink-0 border border-border/50"
                         />

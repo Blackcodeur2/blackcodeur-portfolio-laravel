@@ -36,7 +36,7 @@ interface DevisItem {
     id: number;
     project_id: number;
     content: string;
-    document: string;
+    document_url: string;
     created_at: string;
     project?: {
         id: number;
@@ -233,14 +233,14 @@ export default function Devis({ devis, projects }: Props) {
                                                         </td>
                                                         <td className="p-4">
                                                             <a 
-                                                                href={`/storage/${item.document}`} 
+                                                                href={`/storage/${item.document_url}`} 
                                                                 target="_blank" 
                                                                 rel="noopener noreferrer" 
                                                                 className="inline-flex items-center gap-1.5 text-xs text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium"
                                                                 title="Visualiser le fichier"
                                                             >
                                                                 <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
-                                                                <span className="max-w-[120px] truncate">{getFileName(item.document)}</span>
+                                                                <span className="max-w-[120px] truncate">{getFileName(item.document_url)}</span>
                                                                 <Download className="h-3 w-3" />
                                                             </a>
                                                         </td>

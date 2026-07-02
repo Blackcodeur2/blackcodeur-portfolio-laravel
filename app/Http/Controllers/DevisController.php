@@ -43,7 +43,7 @@ class DevisController extends Controller
 
         $filePath = null;
         if ($request->hasFile('document')) {
-            $filePath = $request->file('document')->store('devis', 'vercel');
+            $filePath = $request->file('document')->store('devis', 'supabase');
         }
 
         Devis::create([
@@ -63,8 +63,8 @@ class DevisController extends Controller
      */
     public function destroy(Devis $devis): RedirectResponse
     {
-        if ($devis->document && Storage::disk('vercel')->exists($devis->document)) {
-            Storage::disk('vercel')->delete($devis->document);
+        if ($devis->document && Storage::disk('supabase')->exists($devis->document)) {
+            Storage::disk('supabase')->delete($devis->document);
         }
 
         $devis->delete();

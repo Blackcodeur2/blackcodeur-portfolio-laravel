@@ -14,8 +14,6 @@ class ProjectGalleryController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
-     * @return InertiaResponse
      */
     public function index(): InertiaResponse
     {
@@ -29,9 +27,6 @@ class ProjectGalleryController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
@@ -41,15 +36,15 @@ class ProjectGalleryController extends Controller
             'image_item' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120', // max 5MB
         ]);
 
-        $filePath = null;
+        $imagePath = null;
         if ($request->hasFile('image_item')) {
-            $filePath = $request->file('image_item')->store('gallery', 'vercel');
+            $imagePath = $request->file('image_item')->store('gallery', 'supabase');
         }
 
         ProjectGallery::create([
             'project_id' => $request->input('project_id'),
             'description' => $request->input('description'),
-            'image_item' => $filePath,
+            'image_item' => $imagePath,
         ]);
 
         return redirect()->route('gallery.index')->with('success', 'Image ajoutée à la galerie avec succès.');
@@ -57,16 +52,12 @@ class ProjectGalleryController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param ProjectGallery $gallery
-     * @return RedirectResponse
      */
     public function destroy(ProjectGallery $gallery): RedirectResponse
     {
-        if ($gallery->image_item && Storage::disk('vercel')->exists($gallery->image_item)) {
-            Storage::disk('vercel')->delete($gallery->image_item);
+        if ($gallery->image_item) {
+            Storage::disk('supabase')->delete($gallery->image_item);
         }
-
         $gallery->delete();
 
         return redirect()->route('gallery.index')->with('success', 'Image supprimée de la galerie avec succès.');
