@@ -19,7 +19,7 @@ import {
     MessageSquare,
     Sun,
     Moon,
-    Monitor
+    Monitor,
 } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -41,6 +41,7 @@ interface Project {
 interface GalleryItem {
     id: number;
     image_item: string;
+    image_item_url: string;
     description?: string;
     project?: {
         name: string;
@@ -61,7 +62,7 @@ interface PortfolioProfile {
     birth_date: string;
     sexe: 'M' | 'F';
     bio: string | null;
-    profile_picture: string | null;
+    profile_picture_url: string | null;
     skills: string | null;
     education: string | null;
 }
@@ -146,12 +147,16 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
 
     const prevImage = useCallback(() => {
         if (lightboxIndex === null) return;
-        setLightboxIndex((prev) => (prev !== null ? (prev - 1 + gallery.length) % gallery.length : null));
+        setLightboxIndex((prev) =>
+            prev !== null ? (prev - 1 + gallery.length) % gallery.length : null,
+        );
     }, [lightboxIndex, gallery.length]);
 
     const nextImage = useCallback(() => {
         if (lightboxIndex === null) return;
-        setLightboxIndex((prev) => (prev !== null ? (prev + 1) % gallery.length : null));
+        setLightboxIndex((prev) =>
+            prev !== null ? (prev + 1) % gallery.length : null,
+        );
     }, [lightboxIndex, gallery.length]);
 
     // Keydown hooks
@@ -170,7 +175,7 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
         <>
             <Head title="Portfolio & Projets" />
 
-            <div className="relative min-h-screen bg-neutral-50 dark:bg-zinc-950 text-foreground transition-colors duration-300 overflow-x-hidden">
+            <div className="relative min-h-screen overflow-x-hidden bg-neutral-50 text-foreground transition-colors duration-300 dark:bg-zinc-950">
                 <style>{`
                     @keyframes grid-slide {
                         0% { background-position: 0 0; }
@@ -277,23 +282,31 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 `}</style>
 
                 {/* ── BACKGROUND ORNAMENTS (Tech & Dynamic) ── */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none">
+                <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none">
                     {/* Sliding Tech Grid */}
-                    <div className="absolute inset-0 tech-grid opacity-80" />
+                    <div className="tech-grid absolute inset-0 opacity-80" />
 
                     {/* Glowing Orbs */}
-                    <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-indigo-500/10 dark:bg-indigo-500/5 blur-[120px] animate-orb-1" />
-                    <div className="absolute bottom-[20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-violet-500/10 dark:bg-violet-500/5 blur-[150px] animate-orb-2" />
-                    <div className="absolute top-[40%] left-[20%] w-[40%] h-[40%] rounded-full bg-sky-500/8 dark:bg-sky-500/3 blur-[100px] animate-orb-3" />
+                    <div className="animate-orb-1 absolute top-[-10%] left-[-10%] h-[50%] w-[50%] rounded-full bg-indigo-500/10 blur-[120px] dark:bg-indigo-500/5" />
+                    <div className="animate-orb-2 absolute right-[-10%] bottom-[20%] h-[60%] w-[60%] rounded-full bg-violet-500/10 blur-[150px] dark:bg-violet-500/5" />
+                    <div className="animate-orb-3 absolute top-[40%] left-[20%] h-[40%] w-[40%] rounded-full bg-sky-500/8 blur-[100px] dark:bg-sky-500/3" />
 
                     {/* Dotted/Grid Intersections (subtle tech motif) */}
-                    <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025]" style={{
-                        backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
-                        backgroundSize: '20px 20px'
-                    }} />
+                    <div
+                        className="absolute inset-0 opacity-[0.015] dark:opacity-[0.025]"
+                        style={{
+                            backgroundImage:
+                                'radial-gradient(circle, currentColor 1px, transparent 1px)',
+                            backgroundSize: '20px 20px',
+                        }}
+                    />
 
                     {/* Animated Tech Lines — Circuit Board Style */}
-                    <svg className="absolute w-full h-full text-indigo-500 dark:text-indigo-400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <svg
+                        className="absolute h-full w-full text-indigo-500 dark:text-indigo-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                    >
                         <defs>
                             <style>{`
                                 .tl1 { animation: line-flow 18s linear infinite; }
@@ -305,129 +318,611 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                         </defs>
 
                         {/* Horizontal circuit traces */}
-                        <path d="M -200,180 L 300,180 L 380,240 L 780,240 L 860,180 L 2000,180"
-                            fill="none" stroke="currentColor" strokeWidth="1.2" strokeDasharray="12 8" opacity="0.18" className="tl1" />
-                        <path d="M -200,520 L 250,520 L 330,460 L 850,460 L 930,520 L 2000,520"
-                            fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="8 10" opacity="0.12" className="tl2" />
-                        <path d="M -200,920 L 400,920 L 480,860 L 1000,860 L 1080,920 L 2000,920"
-                            fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="14 6" opacity="0.15" className="tl3" />
-                        <path d="M -200,1380 L 350,1380 L 430,1320 L 920,1320 L 1000,1380 L 2000,1380"
-                            fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="10 8" opacity="0.1" className="tl4" />
-                        <path d="M -200,1800 L 500,1800 L 580,1740 L 1100,1740 L 1180,1800 L 2200,1800"
-                            fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="6 10" opacity="0.08" className="tl5" />
+                        <path
+                            d="M -200,180 L 300,180 L 380,240 L 780,240 L 860,180 L 2000,180"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeDasharray="12 8"
+                            opacity="0.18"
+                            className="tl1"
+                        />
+                        <path
+                            d="M -200,520 L 250,520 L 330,460 L 850,460 L 930,520 L 2000,520"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            strokeDasharray="8 10"
+                            opacity="0.12"
+                            className="tl2"
+                        />
+                        <path
+                            d="M -200,920 L 400,920 L 480,860 L 1000,860 L 1080,920 L 2000,920"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeDasharray="14 6"
+                            opacity="0.15"
+                            className="tl3"
+                        />
+                        <path
+                            d="M -200,1380 L 350,1380 L 430,1320 L 920,1320 L 1000,1380 L 2000,1380"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            strokeDasharray="10 8"
+                            opacity="0.1"
+                            className="tl4"
+                        />
+                        <path
+                            d="M -200,1800 L 500,1800 L 580,1740 L 1100,1740 L 1180,1800 L 2200,1800"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="0.8"
+                            strokeDasharray="6 10"
+                            opacity="0.08"
+                            className="tl5"
+                        />
 
                         {/* Vertical accent traces */}
-                        <path d="M 220,0 L 220,280 L 300,360 L 300,700 L 220,780 L 220,2000"
-                            fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="10 8" opacity="0.1" className="tl2" />
-                        <path d="M 680,0 L 680,140 L 760,220 L 760,600 L 680,680 L 680,2000"
-                            fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="8 12" opacity="0.08" className="tl4" />
-                        <path d="M 1200,0 L 1200,380 L 1120,460 L 1120,900 L 1200,980 L 1200,2000"
-                            fill="none" stroke="currentColor" strokeWidth="1.2" strokeDasharray="12 8" opacity="0.12" className="tl1" />
+                        <path
+                            d="M 220,0 L 220,280 L 300,360 L 300,700 L 220,780 L 220,2000"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1"
+                            strokeDasharray="10 8"
+                            opacity="0.1"
+                            className="tl2"
+                        />
+                        <path
+                            d="M 680,0 L 680,140 L 760,220 L 760,600 L 680,680 L 680,2000"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="0.8"
+                            strokeDasharray="8 12"
+                            opacity="0.08"
+                            className="tl4"
+                        />
+                        <path
+                            d="M 1200,0 L 1200,380 L 1120,460 L 1120,900 L 1200,980 L 1200,2000"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.2"
+                            strokeDasharray="12 8"
+                            opacity="0.12"
+                            className="tl1"
+                        />
 
                         {/* Circuit node dots — animated pulses at key intersections */}
-                        <circle cx="300" cy="180" r="3" fill="currentColor" className="node-pulse" />
-                        <circle cx="780" cy="240" r="3" fill="currentColor" className="node-pulse-slow" />
-                        <circle cx="330" cy="520" r="2.5" fill="currentColor" className="node-pulse" style={{ animationDelay: '1s' }} />
-                        <circle cx="850" cy="460" r="2.5" fill="currentColor" className="node-pulse-xslow" />
-                        <circle cx="480" cy="920" r="3" fill="currentColor" className="node-pulse" style={{ animationDelay: '2s' }} />
-                        <circle cx="1000" cy="860" r="3" fill="currentColor" className="node-pulse-slow" style={{ animationDelay: '0.5s' }} />
-                        <circle cx="430" cy="1380" r="2" fill="currentColor" className="node-pulse-xslow" style={{ animationDelay: '1.5s' }} />
-                        <circle cx="920" cy="1320" r="2" fill="currentColor" className="node-pulse" style={{ animationDelay: '3s' }} />
-                        <circle cx="220" cy="360" r="3" fill="currentColor" className="node-pulse-slow" style={{ animationDelay: '2.5s' }} />
-                        <circle cx="760" cy="220" r="2.5" fill="currentColor" className="node-pulse" style={{ animationDelay: '1.8s' }} />
-                        <circle cx="1120" cy="460" r="3" fill="currentColor" className="node-pulse-slow" style={{ animationDelay: '0.8s' }} />
+                        <circle
+                            cx="300"
+                            cy="180"
+                            r="3"
+                            fill="currentColor"
+                            className="node-pulse"
+                        />
+                        <circle
+                            cx="780"
+                            cy="240"
+                            r="3"
+                            fill="currentColor"
+                            className="node-pulse-slow"
+                        />
+                        <circle
+                            cx="330"
+                            cy="520"
+                            r="2.5"
+                            fill="currentColor"
+                            className="node-pulse"
+                            style={{ animationDelay: '1s' }}
+                        />
+                        <circle
+                            cx="850"
+                            cy="460"
+                            r="2.5"
+                            fill="currentColor"
+                            className="node-pulse-xslow"
+                        />
+                        <circle
+                            cx="480"
+                            cy="920"
+                            r="3"
+                            fill="currentColor"
+                            className="node-pulse"
+                            style={{ animationDelay: '2s' }}
+                        />
+                        <circle
+                            cx="1000"
+                            cy="860"
+                            r="3"
+                            fill="currentColor"
+                            className="node-pulse-slow"
+                            style={{ animationDelay: '0.5s' }}
+                        />
+                        <circle
+                            cx="430"
+                            cy="1380"
+                            r="2"
+                            fill="currentColor"
+                            className="node-pulse-xslow"
+                            style={{ animationDelay: '1.5s' }}
+                        />
+                        <circle
+                            cx="920"
+                            cy="1320"
+                            r="2"
+                            fill="currentColor"
+                            className="node-pulse"
+                            style={{ animationDelay: '3s' }}
+                        />
+                        <circle
+                            cx="220"
+                            cy="360"
+                            r="3"
+                            fill="currentColor"
+                            className="node-pulse-slow"
+                            style={{ animationDelay: '2.5s' }}
+                        />
+                        <circle
+                            cx="760"
+                            cy="220"
+                            r="2.5"
+                            fill="currentColor"
+                            className="node-pulse"
+                            style={{ animationDelay: '1.8s' }}
+                        />
+                        <circle
+                            cx="1120"
+                            cy="460"
+                            r="3"
+                            fill="currentColor"
+                            className="node-pulse-slow"
+                            style={{ animationDelay: '0.8s' }}
+                        />
                     </svg>
                 </div>
 
                 {/* ── FLOATING TECH CHIPS ── */}
-                <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden select-none" aria-hidden="true">
+                <div
+                    className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
+                    aria-hidden="true"
+                >
                     {/* Chip 1 — top right */}
                     <div className="chip-float-1 absolute top-[12%] right-[8%] opacity-[0.07] dark:opacity-[0.10]">
-                        <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="16" y="16" width="40" height="40" rx="4" stroke="#6366f1" strokeWidth="1.5" />
-                            <rect x="24" y="24" width="24" height="24" rx="2" stroke="#6366f1" strokeWidth="1" />
-                            <line x1="24" y1="8" x2="24" y2="16" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="36" y1="8" x2="36" y2="16" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="48" y1="8" x2="48" y2="16" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="24" y1="56" x2="24" y2="64" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="36" y1="56" x2="36" y2="64" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="48" y1="56" x2="48" y2="64" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="8" y1="24" x2="16" y2="24" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="8" y1="36" x2="16" y2="36" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="8" y1="48" x2="16" y2="48" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="56" y1="24" x2="64" y2="24" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="56" y1="36" x2="64" y2="36" stroke="#6366f1" strokeWidth="1.5" />
-                            <line x1="56" y1="48" x2="64" y2="48" stroke="#6366f1" strokeWidth="1.5" />
+                        <svg
+                            width="72"
+                            height="72"
+                            viewBox="0 0 72 72"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <rect
+                                x="16"
+                                y="16"
+                                width="40"
+                                height="40"
+                                rx="4"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <rect
+                                x="24"
+                                y="24"
+                                width="24"
+                                height="24"
+                                rx="2"
+                                stroke="#6366f1"
+                                strokeWidth="1"
+                            />
+                            <line
+                                x1="24"
+                                y1="8"
+                                x2="24"
+                                y2="16"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="36"
+                                y1="8"
+                                x2="36"
+                                y2="16"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="48"
+                                y1="8"
+                                x2="48"
+                                y2="16"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="24"
+                                y1="56"
+                                x2="24"
+                                y2="64"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="36"
+                                y1="56"
+                                x2="36"
+                                y2="64"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="48"
+                                y1="56"
+                                x2="48"
+                                y2="64"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="8"
+                                y1="24"
+                                x2="16"
+                                y2="24"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="8"
+                                y1="36"
+                                x2="16"
+                                y2="36"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="8"
+                                y1="48"
+                                x2="16"
+                                y2="48"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="56"
+                                y1="24"
+                                x2="64"
+                                y2="24"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="56"
+                                y1="36"
+                                x2="64"
+                                y2="36"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="56"
+                                y1="48"
+                                x2="64"
+                                y2="48"
+                                stroke="#6366f1"
+                                strokeWidth="1.5"
+                            />
                         </svg>
                     </div>
                     {/* Chip 2 — mid left */}
                     <div className="chip-float-2 absolute top-[40%] left-[4%] opacity-[0.06] dark:opacity-[0.09]">
-                        <svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="12" y="12" width="32" height="32" rx="3" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <rect x="18" y="18" width="20" height="20" rx="2" stroke="#8b5cf6" strokeWidth="1" />
-                            <line x1="18" y1="6" x2="18" y2="12" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="28" y1="6" x2="28" y2="12" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="38" y1="6" x2="38" y2="12" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="18" y1="44" x2="18" y2="50" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="28" y1="44" x2="28" y2="50" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="38" y1="44" x2="38" y2="50" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="6" y1="18" x2="12" y2="18" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="6" y1="28" x2="12" y2="28" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="6" y1="38" x2="12" y2="38" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="44" y1="18" x2="50" y2="18" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="44" y1="28" x2="50" y2="28" stroke="#8b5cf6" strokeWidth="1.5" />
-                            <line x1="44" y1="38" x2="50" y2="38" stroke="#8b5cf6" strokeWidth="1.5" />
+                        <svg
+                            width="56"
+                            height="56"
+                            viewBox="0 0 56 56"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <rect
+                                x="12"
+                                y="12"
+                                width="32"
+                                height="32"
+                                rx="3"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <rect
+                                x="18"
+                                y="18"
+                                width="20"
+                                height="20"
+                                rx="2"
+                                stroke="#8b5cf6"
+                                strokeWidth="1"
+                            />
+                            <line
+                                x1="18"
+                                y1="6"
+                                x2="18"
+                                y2="12"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="28"
+                                y1="6"
+                                x2="28"
+                                y2="12"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="38"
+                                y1="6"
+                                x2="38"
+                                y2="12"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="18"
+                                y1="44"
+                                x2="18"
+                                y2="50"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="28"
+                                y1="44"
+                                x2="28"
+                                y2="50"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="38"
+                                y1="44"
+                                x2="38"
+                                y2="50"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="6"
+                                y1="18"
+                                x2="12"
+                                y2="18"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="6"
+                                y1="28"
+                                x2="12"
+                                y2="28"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="6"
+                                y1="38"
+                                x2="12"
+                                y2="38"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="44"
+                                y1="18"
+                                x2="50"
+                                y2="18"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="44"
+                                y1="28"
+                                x2="50"
+                                y2="28"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="44"
+                                y1="38"
+                                x2="50"
+                                y2="38"
+                                stroke="#8b5cf6"
+                                strokeWidth="1.5"
+                            />
                         </svg>
                     </div>
                     {/* Chip 3 — bottom left */}
-                    <div className="chip-float-3 absolute bottom-[20%] right-[12%] opacity-[0.05] dark:opacity-[0.08]">
-                        <svg width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <rect x="20" y="20" width="50" height="50" rx="6" stroke="#06b6d4" strokeWidth="1.5" />
-                            <rect x="30" y="30" width="30" height="30" rx="3" stroke="#06b6d4" strokeWidth="1" />
-                            <line x1="30" y1="10" x2="30" y2="20" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="45" y1="10" x2="45" y2="20" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="60" y1="10" x2="60" y2="20" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="30" y1="70" x2="30" y2="80" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="45" y1="70" x2="45" y2="80" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="60" y1="70" x2="60" y2="80" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="10" y1="30" x2="20" y2="30" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="10" y1="45" x2="20" y2="45" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="10" y1="60" x2="20" y2="60" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="70" y1="30" x2="80" y2="30" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="70" y1="45" x2="80" y2="45" stroke="#06b6d4" strokeWidth="1.5" />
-                            <line x1="70" y1="60" x2="80" y2="60" stroke="#06b6d4" strokeWidth="1.5" />
+                    <div className="chip-float-3 absolute right-[12%] bottom-[20%] opacity-[0.05] dark:opacity-[0.08]">
+                        <svg
+                            width="90"
+                            height="90"
+                            viewBox="0 0 90 90"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <rect
+                                x="20"
+                                y="20"
+                                width="50"
+                                height="50"
+                                rx="6"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <rect
+                                x="30"
+                                y="30"
+                                width="30"
+                                height="30"
+                                rx="3"
+                                stroke="#06b6d4"
+                                strokeWidth="1"
+                            />
+                            <line
+                                x1="30"
+                                y1="10"
+                                x2="30"
+                                y2="20"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="45"
+                                y1="10"
+                                x2="45"
+                                y2="20"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="60"
+                                y1="10"
+                                x2="60"
+                                y2="20"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="30"
+                                y1="70"
+                                x2="30"
+                                y2="80"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="45"
+                                y1="70"
+                                x2="45"
+                                y2="80"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="60"
+                                y1="70"
+                                x2="60"
+                                y2="80"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="10"
+                                y1="30"
+                                x2="20"
+                                y2="30"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="10"
+                                y1="45"
+                                x2="20"
+                                y2="45"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="10"
+                                y1="60"
+                                x2="20"
+                                y2="60"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="70"
+                                y1="30"
+                                x2="80"
+                                y2="30"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="70"
+                                y1="45"
+                                x2="80"
+                                y2="45"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
+                            <line
+                                x1="70"
+                                y1="60"
+                                x2="80"
+                                y2="60"
+                                stroke="#06b6d4"
+                                strokeWidth="1.5"
+                            />
                         </svg>
                     </div>
                 </div>
 
                 {/* ── HEADER ── */}
                 <header
-                    className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 border-b 
-                        ${scrolled
-                            ? 'bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md py-3 shadow-xs border-neutral-200 dark:border-zinc-800'
-                            : 'bg-transparent py-5 border-transparent'
-                        }`}
+                    className={`fixed top-0 right-0 left-0 z-40 border-b transition-all duration-300 ${
+                        scrolled
+                            ? 'border-neutral-200 bg-white/80 py-3 shadow-xs backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80'
+                            : 'border-transparent bg-transparent py-5'
+                    }`}
                 >
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+                    <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                         <div className="flex items-center gap-2">
-                            <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md shadow-indigo-600/20">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 shadow-md shadow-indigo-600/20">
                                 <Layers className="h-5 w-5 text-white" />
                             </div>
-                            <span className="font-extrabold text-lg tracking-tight bg-linear-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">
+                            <span className="bg-linear-to-r from-indigo-600 to-violet-500 bg-clip-text text-lg font-extrabold tracking-tight text-transparent">
                                 Portfolio-Nguefack
                             </span>
                         </div>
 
                         {/* Mid Navigation */}
-                        <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-600 dark:text-neutral-300">
-                            <a href="#about" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">À propos</a>
-                            {profile && (profile.skills || profile.education) && (
-                                <a href="#skills-education" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Cursus</a>
-                            )}
-                            <a href="#stats" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Chiffres</a>
-                            <a href="#projects" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Projets</a>
-                            <a href="#gallery" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Galerie</a>
-                            <a href="#contact" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</a>
+                        <nav className="hidden items-center gap-8 text-sm font-semibold text-neutral-600 md:flex dark:text-neutral-300">
+                            <a
+                                href="#about"
+                                className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                            >
+                                À propos
+                            </a>
+                            {profile &&
+                                (profile.skills || profile.education) && (
+                                    <a
+                                        href="#skills-education"
+                                        className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                                    >
+                                        Cursus
+                                    </a>
+                                )}
+                            <a
+                                href="#stats"
+                                className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                            >
+                                Chiffres
+                            </a>
+                            <a
+                                href="#projects"
+                                className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                            >
+                                Projets
+                            </a>
+                            <a
+                                href="#gallery"
+                                className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                            >
+                                Galerie
+                            </a>
+                            <a
+                                href="#contact"
+                                className="transition-colors hover:text-indigo-600 dark:hover:text-indigo-400"
+                            >
+                                Contact
+                            </a>
                         </nav>
 
                         {/* Right: Theme Toggle + Auth */}
@@ -436,18 +931,30 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             <button
                                 id="theme-toggle"
                                 onClick={cycleTheme}
-                                title={appearance === 'light' ? 'Passer en mode sombre' : appearance === 'dark' ? 'Passer en mode système' : 'Passer en mode clair'}
-                                className="h-9 w-9 inline-flex items-center justify-center rounded-xl border border-neutral-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-zinc-700 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200 shadow-xs"
+                                title={
+                                    appearance === 'light'
+                                        ? 'Passer en mode sombre'
+                                        : appearance === 'dark'
+                                          ? 'Passer en mode système'
+                                          : 'Passer en mode clair'
+                                }
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-neutral-200 bg-white text-neutral-600 shadow-xs transition-all duration-200 hover:bg-neutral-100 hover:text-indigo-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-neutral-300 dark:hover:bg-zinc-700 dark:hover:text-indigo-400"
                             >
-                                {appearance === 'light' && <Sun className="h-4 w-4" />}
-                                {appearance === 'dark' && <Moon className="h-4 w-4" />}
-                                {appearance === 'system' && <Monitor className="h-4 w-4" />}
+                                {appearance === 'light' && (
+                                    <Sun className="h-4 w-4" />
+                                )}
+                                {appearance === 'dark' && (
+                                    <Moon className="h-4 w-4" />
+                                )}
+                                {appearance === 'system' && (
+                                    <Monitor className="h-4 w-4" />
+                                )}
                             </button>
 
                             {auth.user ? (
                                 <Link
                                     href={dashboard()}
-                                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 text-xs font-semibold shadow-md shadow-indigo-600/10 transition-all duration-200"
+                                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-600/10 transition-all duration-200 hover:bg-indigo-500"
                                 >
                                     Dashboard
                                     <ArrowRight className="h-3.5 w-3.5" />
@@ -460,43 +967,48 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 </header>
 
                 {/* ── HERO SECTION ── */}
-                <section id="about" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-linear-to-b from-indigo-500/5 via-transparent to-transparent">
+                <section
+                    id="about"
+                    className="relative overflow-hidden bg-linear-to-b from-indigo-500/5 via-transparent to-transparent pt-32 pb-20 md:pt-40 md:pb-28"
+                >
                     {/* Decorative Background Blobs */}
                     <div className="absolute top-20 right-0 -z-10 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl" />
                     <div className="absolute top-40 left-10 -z-10 h-64 w-64 rounded-full bg-violet-600/5 blur-3xl" />
 
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         {profile ? (
-                            <div className="grid gap-12 lg:grid-cols-12 items-center text-left">
+                            <div className="grid items-center gap-12 text-left lg:grid-cols-12">
                                 {/* Left Side: Text Details */}
-                                <div className="lg:col-span-7 space-y-6 sr sr-left">
-                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 px-3 py-3 text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+                                <div className="sr sr-left space-y-6 lg:col-span-7">
+                                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-3 text-xs font-semibold text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-300">
                                         <Briefcase className="h-3.5 w-3.5" />
                                         Développeur Fullstack
                                     </span>
 
-                                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none">
-                                        Bonjour, je suis<br />
+                                    <h1 className="text-4xl leading-none font-black tracking-tight sm:text-5xl lg:text-6xl">
+                                        Bonjour, je suis
+                                        <br />
                                         <span className="bg-linear-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
                                             {profile.name}
                                         </span>
                                     </h1>
 
-                                    <p className="text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl">
-                                        {profile.bio || "Découvrez mon portfolio de projets réalisés pour les entreprises et artisans recensés sur Google Maps. Devis optimisés, suivis de projets clairs, et réalisations de haute qualité."}
+                                    <p className="max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
+                                        {profile.bio ||
+                                            'Découvrez mon portfolio de projets réalisés pour les entreprises et artisans recensés sur Google Maps. Devis optimisés, suivis de projets clairs, et réalisations de haute qualité.'}
                                     </p>
 
-                                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-4">
+                                    <div className="flex flex-col items-stretch gap-4 pt-4 sm:flex-row sm:items-center">
                                         <a
                                             href="#projects"
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:translate-y-[px] active:translate-y-0 transition-all duration-200"
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all duration-200 hover:translate-y-[px] hover:bg-indigo-500 active:translate-y-0"
                                         >
                                             Voir mes projets
                                             <ArrowRight className="h-4 w-4" />
                                         </a>
                                         <a
                                             href="#contact"
-                                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-foreground px-6 py-3.5 font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-zinc-800 transition-all duration-200"
+                                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-200 hover:bg-neutral-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                                         >
                                             <Mail className="h-4 w-4 text-muted-foreground" />
                                             Me contacter
@@ -505,19 +1017,21 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 </div>
 
                                 {/* Right Side: Circular Glassmorphic Profile Pic */}
-                                <div className="lg:col-span-5 flex justify-center lg:justify-end sr sr-right">
-                                    <div className="relative group">
+                                <div className="sr sr-right flex justify-center lg:col-span-5 lg:justify-end">
+                                    <div className="group relative">
                                         {/* Glow effect */}
-                                        <div className="absolute -inset-1.5 bg-linear-to-r from-indigo-600 to-violet-600 rounded-full blur-lg opacity-40 group-hover:opacity-60 transition duration-300" />
-                                        <div className="relative h-64 w-64 sm:h-80 sm:w-80 rounded-full overflow-hidden border-4 border-white dark:border-zinc-900 shadow-2xl bg-neutral-100 dark:bg-zinc-800">
-                                            {profile.profile_picture ? (
+                                        <div className="absolute -inset-1.5 rounded-full bg-linear-to-r from-indigo-600 to-violet-600 opacity-40 blur-lg transition duration-300 group-hover:opacity-60" />
+                                        <div className="relative h-64 w-64 overflow-hidden rounded-full border-4 border-white bg-neutral-100 shadow-2xl sm:h-80 sm:w-80 dark:border-zinc-900 dark:bg-zinc-800">
+                                            {profile.profile_picture_url ? (
                                                 <img
-                                                    src={profile.profile_picture}
+                                                    src={
+                                                        profile.profile_picture_url
+                                                    }
                                                     alt={profile.name}
-                                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                                <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                                                     <Briefcase className="h-20 w-20 opacity-30" />
                                                 </div>
                                             )}
@@ -526,34 +1040,38 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center sr sr-up">
-                                <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:text-indigo-300 mb-6">
+                            <div className="sr sr-up text-center">
+                                <span className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-300">
                                     <Briefcase className="h-3.5 w-3.5" />
                                     Réalisations & Projets
                                 </span>
 
-                                <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none mb-6">
+                                <h1 className="mb-6 text-4xl leading-none font-black tracking-tight sm:text-6xl">
                                     Suivi des Projes &<br />
                                     <span className="bg-linear-to-r from-indigo-600 via-indigo-500 to-violet-500 bg-clip-text text-transparent">
                                         Projets Entreprises
                                     </span>
                                 </h1>
 
-                                <p className="max-w-2xl mx-auto text-lg text-neutral-600 dark:text-neutral-400 leading-relaxed mb-10">
-                                    Découvrez notre portfolio de projets réalisés pour les entreprises et artisans recensés sur Google Maps. Devis optimisés, suivis de projets clairs, et réalisations de haute qualité.
+                                <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-neutral-600 dark:text-neutral-400">
+                                    Découvrez notre portfolio de projets
+                                    réalisés pour les entreprises et artisans
+                                    recensés sur Google Maps. Devis optimisés,
+                                    suivis de projets clairs, et réalisations de
+                                    haute qualité.
                                 </p>
 
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                                <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
                                     <a
                                         href="#projects"
-                                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3.5 font-semibold text-sm shadow-lg shadow-indigo-600/20 hover:translate-y-[px] active:translate-y-0 transition-all duration-200"
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition-all duration-200 hover:translate-y-[px] hover:bg-indigo-500 active:translate-y-0 sm:w-auto"
                                     >
                                         Voir les projets
                                         <ArrowRight className="h-4 w-4" />
                                     </a>
                                     <a
                                         href="#contact"
-                                        className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-xl border border-neutral-300 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-foreground px-6 py-3.5 font-semibold text-sm hover:bg-neutral-50 dark:hover:bg-zinc-800 transition-all duration-200"
+                                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-200 hover:bg-neutral-50 sm:w-auto dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                                     >
                                         <Mail className="h-4 w-4 text-muted-foreground" />
                                         Nous contacter
@@ -565,11 +1083,14 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 </section>
 
                 {/* ── STATS SECTION ── */}
-                <section id="stats" className="py-12 border-y border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-center divide-x divide-neutral-200 dark:divide-zinc-800">
+                <section
+                    id="stats"
+                    className="border-y border-neutral-200 bg-white py-12 dark:border-zinc-800 dark:bg-zinc-900/40"
+                >
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="grid grid-cols-2 gap-8 divide-x divide-neutral-200 text-center md:grid-cols-3 dark:divide-zinc-800">
                             <div className="sr sr-zoom sr-d1">
-                                <p className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 leading-none mb-2">
+                                <p className="mb-2 text-4xl leading-none font-black text-indigo-600 sm:text-5xl dark:text-indigo-400">
                                     {stats.enterprises_count}
                                 </p>
                                 <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
@@ -577,16 +1098,17 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                 </p>
                             </div>
                             <div className="sr sr-zoom sr-d3">
-                                <p className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 leading-none mb-2">
+                                <p className="mb-2 text-4xl leading-none font-black text-indigo-600 sm:text-5xl dark:text-indigo-400">
                                     {stats.projects_finished}
                                 </p>
                                 <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
                                     projets terminés
                                 </p>
                             </div>
-                            <div className="col-span-2 md:col-span-1 sr sr-zoom sr-d5">
-                                <p className="text-4xl sm:text-5xl font-black text-indigo-600 dark:text-indigo-400 leading-none mb-2">
-                                    {stats.projects_count - stats.projects_finished}
+                            <div className="sr sr-zoom sr-d5 col-span-2 md:col-span-1">
+                                <p className="mb-2 text-4xl leading-none font-black text-indigo-600 sm:text-5xl dark:text-indigo-400">
+                                    {stats.projects_count -
+                                        stats.projects_finished}
                                 </p>
                                 <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
                                     Projets en cours
@@ -598,58 +1120,87 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
 
                 {/* ── SKILLS & EDUCATION SECTION ── */}
                 {profile && (profile.skills || profile.education) && (
-                    <section id="skills-education" className="py-20 md:py-28 bg-neutral-100/50 dark:bg-zinc-900/10 border-b border-neutral-200 dark:border-zinc-800">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <section
+                        id="skills-education"
+                        className="border-b border-neutral-200 bg-neutral-100/50 py-20 md:py-28 dark:border-zinc-800 dark:bg-zinc-900/10"
+                    >
+                        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                             <div className="grid gap-16 lg:grid-cols-2">
                                 {/* Left: Skills */}
                                 {profile.skills && (
-                                    <div className="space-y-6 sr sr-left">
+                                    <div className="sr sr-left space-y-6">
                                         <h2 className="text-3xl font-extrabold tracking-tight">
                                             Mes Compétences
                                         </h2>
                                         <p className="text-neutral-600 dark:text-neutral-400">
-                                            Voici un aperçu des technologies et outils que j'utilise au quotidien pour concevoir des applications performantes.
+                                            Voici un aperçu des technologies et
+                                            outils que j'utilise au quotidien
+                                            pour concevoir des applications
+                                            performantes.
                                         </p>
                                         <div className="flex flex-wrap gap-2.5 pt-2">
-                                            {profile.skills.split(',').map(s => s.trim()).filter(s => s.length > 0).map((skill, idx) => (
-                                                <span
-                                                    key={idx}
-                                                    className="inline-flex items-center rounded-xl bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 px-4 py-2 text-xs font-semibold shadow-xs hover:border-indigo-500 dark:hover:border-indigo-400 hover:scale-[1.02] transition-all duration-200"
-                                                >
-                                                    {skill}
-                                                </span>
-                                            ))}
+                                            {profile.skills
+                                                .split(',')
+                                                .map((s) => s.trim())
+                                                .filter((s) => s.length > 0)
+                                                .map((skill, idx) => (
+                                                    <span
+                                                        key={idx}
+                                                        className="inline-flex items-center rounded-xl border border-neutral-200 bg-white px-4 py-2 text-xs font-semibold shadow-xs transition-all duration-200 hover:scale-[1.02] hover:border-indigo-500 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-indigo-400"
+                                                    >
+                                                        {skill}
+                                                    </span>
+                                                ))}
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Right: Education/Timeline */}
                                 {profile.education && (
-                                    <div className="space-y-6 sr sr-right">
+                                    <div className="sr sr-right space-y-6">
                                         <h2 className="text-3xl font-extrabold tracking-tight">
                                             Cursus & Expérience
                                         </h2>
-                                        <div className="relative border-l border-neutral-200 dark:border-zinc-800 ml-2.5 pl-6 space-y-8">
-                                            {profile.education.split('\n').filter(line => line.trim().length > 0).map((line, idx) => {
-                                                const parts = line.split(':');
-                                                const time = parts.length >= 2 ? parts[0].trim() : '';
-                                                const desc = parts.length >= 2 ? parts.slice(1).join(':').trim() : line.trim();
-                                                return (
-                                                    <div key={idx} className="relative group">
-                                                        {/* Icon/Bullet */}
-                                                        <div className="absolute -left-7.75 top-1.5 h-3.5 w-3.5 rounded-full border-2 border-indigo-600 bg-white dark:bg-zinc-950 group-hover:bg-indigo-600 dark:group-hover:bg-indigo-400 transition-colors duration-200" />
+                                        <div className="relative ml-2.5 space-y-8 border-l border-neutral-200 pl-6 dark:border-zinc-800">
+                                            {profile.education
+                                                .split('\n')
+                                                .filter(
+                                                    (line) =>
+                                                        line.trim().length > 0,
+                                                )
+                                                .map((line, idx) => {
+                                                    const parts =
+                                                        line.split(':');
+                                                    const time =
+                                                        parts.length >= 2
+                                                            ? parts[0].trim()
+                                                            : '';
+                                                    const desc =
+                                                        parts.length >= 2
+                                                            ? parts
+                                                                  .slice(1)
+                                                                  .join(':')
+                                                                  .trim()
+                                                            : line.trim();
+                                                    return (
+                                                        <div
+                                                            key={idx}
+                                                            className="group relative"
+                                                        >
+                                                            {/* Icon/Bullet */}
+                                                            <div className="absolute top-1.5 -left-7.75 h-3.5 w-3.5 rounded-full border-2 border-indigo-600 bg-white transition-colors duration-200 group-hover:bg-indigo-600 dark:bg-zinc-950 dark:group-hover:bg-indigo-400" />
 
-                                                        {time && (
-                                                            <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1 tracking-wider uppercase">
-                                                                {time}
+                                                            {time && (
+                                                                <div className="mb-1 text-xs font-bold tracking-wider text-indigo-600 uppercase dark:text-indigo-400">
+                                                                    {time}
+                                                                </div>
+                                                            )}
+                                                            <div className="text-sm leading-relaxed font-semibold text-neutral-900 dark:text-neutral-100">
+                                                                {desc}
                                                             </div>
-                                                        )}
-                                                        <div className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 leading-relaxed">
-                                                            {desc}
                                                         </div>
-                                                    </div>
-                                                );
-                                            })}
+                                                    );
+                                                })}
                                         </div>
                                     </div>
                                 )}
@@ -660,50 +1211,59 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
 
                 {/* ── PROJECTS PORTFOLIO ── */}
                 <section id="projects" className="py-20 md:py-28">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center max-w-3xl mx-auto mb-16 sr sr-up">
-                            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="sr sr-up mx-auto mb-16 max-w-3xl text-center">
+                            <h2 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
                                 Nos Projets Récents
                             </h2>
                             <p className="text-neutral-600 dark:text-neutral-400">
-                                Découvrez les derniers projets initiés pour nos partenaires. Chaque projet témoigne d'un accompagnement personnalisé.
+                                Découvrez les derniers projets initiés pour nos
+                                partenaires. Chaque projet témoigne d'un
+                                accompagnement personnalisé.
                             </p>
                         </div>
 
                         {projects.length === 0 ? (
-                            <div className="text-center py-16 bg-white dark:bg-zinc-900 rounded-2xl border border-neutral-200 dark:border-zinc-800">
-                                <FolderGit2 className="h-12 w-12 mx-auto text-neutral-300 dark:text-neutral-700 mb-3" />
-                                <p className="text-neutral-600 dark:text-neutral-400 font-medium">Aucun projet à afficher pour le moment</p>
+                            <div className="rounded-2xl border border-neutral-200 bg-white py-16 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                                <FolderGit2 className="mx-auto mb-3 h-12 w-12 text-neutral-300 dark:text-neutral-700" />
+                                <p className="font-medium text-neutral-600 dark:text-neutral-400">
+                                    Aucun projet à afficher pour le moment
+                                </p>
                             </div>
                         ) : (
                             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 {projects.map((project, idx) => (
                                     <article
                                         key={project.id}
-                                        className={`sr sr-up sr-d${Math.min(idx % 3 + 1, 6)} group relative flex flex-col justify-between rounded-2xl border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 hover:translate-y-[0.5]`}
+                                        className={`sr sr-up sr-d${Math.min((idx % 3) + 1, 6)} group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-xs transition-all duration-300 hover:translate-y-[0.5] hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900`}
                                     >
                                         <div className="p-5">
                                             {/* Header: icône + badge */}
-                                            <div className="flex items-center justify-between mb-3">
+                                            <div className="mb-3 flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     {project.logo_url ? (
-                                                        <div className="h-10 w-10 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-800 flex items-center justify-center shrink-0 overflow-hidden">
+                                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-neutral-200 bg-neutral-50 dark:border-zinc-800 dark:bg-zinc-800">
                                                             <img
-                                                                src={project.logo_url}
-                                                                alt={project.name}
+                                                                src={
+                                                                    project.logo_url
+                                                                }
+                                                                alt={
+                                                                    project.name
+                                                                }
                                                                 className="h-full w-full object-contain p-1"
                                                             />
                                                         </div>
                                                     ) : (
-                                                        <div className="h-10 w-10 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-neutral-50 dark:bg-zinc-800 flex items-center justify-center shrink-0">
+                                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-neutral-50 dark:border-zinc-800 dark:bg-zinc-800">
                                                             <FolderGit2 className="h-5 w-5 text-neutral-400" />
                                                         </div>
                                                     )}
 
-                                                    <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border
-                                        ${project.is_finished
-                                                            ? 'bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/50 text-emerald-700 dark:text-emerald-400'
-                                                            : 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-400'
+                                                    <span
+                                                        className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-semibold ${
+                                                            project.is_finished
+                                                                ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/20 dark:text-emerald-400'
+                                                                : 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/20 dark:text-amber-400'
                                                         }`}
                                                     >
                                                         {project.is_finished ? (
@@ -713,43 +1273,53 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
+                                                                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
                                                                 En cours
                                                             </>
                                                         )}
                                                     </span>
                                                 </div>
 
-                                                <div className="text-[10px] text-muted-foreground flex items-center gap-1 shrink-0">
+                                                <div className="flex shrink-0 items-center gap-1 text-[10px] text-muted-foreground">
                                                     <Building2 className="h-3.5 w-3.5" />
-                                                    {project.enterprises?.name || 'Artisan Local'}
+                                                    {project.enterprises
+                                                        ?.name ||
+                                                        'Artisan Local'}
                                                 </div>
                                             </div>
 
-                                            <h3 className="text-base font-bold text-neutral-900 dark:text-white mb-1.5 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                            <h3 className="mb-1.5 text-base font-bold text-neutral-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
                                                 {project.name}
                                             </h3>
 
-                                            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-2">
-                                                {project.description || "Aucune description fournie pour ce projet."}
+                                            <p className="line-clamp-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                                                {project.description ||
+                                                    'Aucune description fournie pour ce projet.'}
                                             </p>
                                         </div>
 
-                                        <div className="px-5 pb-4 pt-3 border-t border-neutral-100 dark:border-zinc-800 bg-neutral-50/50 dark:bg-zinc-900/50 flex items-center justify-between gap-4">
+                                        <div className="flex items-center justify-between gap-4 border-t border-neutral-100 bg-neutral-50/50 px-5 pt-3 pb-4 dark:border-zinc-800 dark:bg-zinc-900/50">
                                             {project.enterprises && (
-                                                <div className="text-xs text-muted-foreground flex items-center gap-1.5 truncate">
+                                                <div className="flex items-center gap-1.5 truncate text-xs text-muted-foreground">
                                                     <MapPin className="h-3.5 w-3.5 shrink-0" />
-                                                    <span className="truncate">{project.enterprises.address}</span>
+                                                    <span className="truncate">
+                                                        {
+                                                            project.enterprises
+                                                                .address
+                                                        }
+                                                    </span>
                                                 </div>
                                             )}
 
-                                            <div className="flex items-center gap-2 shrink-0">
+                                            <div className="flex shrink-0 items-center gap-2">
                                                 {project.public_link && (
                                                     <a
-                                                        href={project.public_link}
+                                                        href={
+                                                            project.public_link
+                                                        }
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="h-7 w-7 rounded-lg border border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-neutral-600 dark:text-neutral-300 hover:text-indigo-600 dark:hover:text-indigo-400 flex items-center justify-center transition-colors"
+                                                        className="flex h-7 w-7 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-600 transition-colors hover:text-indigo-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-neutral-300 dark:hover:text-indigo-400"
                                                         title="Visiter le site"
                                                     >
                                                         <ExternalLink className="h-3.5 w-3.5" />
@@ -765,44 +1335,54 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 </section>
 
                 {/* ── PHOTO GALLERY ── */}
-                <section id="gallery" className="py-20 md:py-28 border-t border-neutral-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center max-w-3xl mx-auto mb-16 sr sr-up">
-                            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+                <section
+                    id="gallery"
+                    className="border-t border-neutral-200 bg-white py-20 md:py-28 dark:border-zinc-800 dark:bg-zinc-900/30"
+                >
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        <div className="sr sr-up mx-auto mb-16 max-w-3xl text-center">
+                            <h2 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
                                 Galerie des Réalisations
                             </h2>
                             <p className="text-neutral-600 dark:text-neutral-400">
-                                Un aperçu en images de nos projets, produits ou refontes d'enseignes d'entreprises locales.
+                                Un aperçu en images de nos projets, produits ou
+                                refontes d'enseignes d'entreprises locales.
                             </p>
                         </div>
 
                         {gallery.length === 0 ? (
-                            <div className="text-center py-16 bg-neutral-50 dark:bg-zinc-900 rounded-2xl border border-dashed border-neutral-200 dark:border-zinc-800">
-                                <ImageIcon className="h-12 w-12 mx-auto text-neutral-300 dark:text-neutral-700 mb-3" />
-                                <p className="text-neutral-600 dark:text-neutral-400 font-medium">Aucun visuel disponible dans la galerie publique</p>
+                            <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900">
+                                <ImageIcon className="mx-auto mb-3 h-12 w-12 text-neutral-300 dark:text-neutral-700" />
+                                <p className="font-medium text-neutral-600 dark:text-neutral-400">
+                                    Aucun visuel disponible dans la galerie
+                                    publique
+                                </p>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                                 {gallery.map((item, idx) => (
                                     <div
                                         key={item.id}
                                         onClick={() => openLightbox(idx)}
-                                        className={`sr sr-zoom sr-d${Math.min((idx % 4) + 1, 6)} group relative rounded-xl overflow-hidden bg-neutral-100 dark:bg-neutral-800 aspect-square cursor-zoom-in border border-neutral-200 dark:border-zinc-800 hover:border-indigo-500/50 shadow-xs hover:shadow-lg transition-all duration-300`}
+                                        className={`sr sr-zoom sr-d${Math.min((idx % 4) + 1, 6)} group relative aspect-square cursor-zoom-in overflow-hidden rounded-xl border border-neutral-200 bg-neutral-100 shadow-xs transition-all duration-300 hover:border-indigo-500/50 hover:shadow-lg dark:border-zinc-800 dark:bg-neutral-800`}
                                     >
                                         <img
-                                            src={item.image_item}
-                                            alt={item.description ?? 'Réalisation'}
-                                            className="w-full h-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
+                                            src={item.image_item_url}
+                                            alt={
+                                                item.description ??
+                                                'Réalisation'
+                                            }
+                                            className="h-full w-full object-contain p-2 transition-transform duration-300 group-hover:scale-105"
                                             loading="lazy"
                                         />
-                                        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-4">
+                                        <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/80 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                             {item.project && (
-                                                <p className="text-white text-xs font-semibold truncate">
+                                                <p className="truncate text-xs font-semibold text-white">
                                                     {item.project.name}
                                                 </p>
                                             )}
                                             {item.description && (
-                                                <p className="text-white/70 text-[10px] truncate mt-0.5">
+                                                <p className="mt-0.5 truncate text-[10px] text-white/70">
                                                     {item.description}
                                                 </p>
                                             )}
@@ -815,48 +1395,67 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 </section>
 
                 {/* ── CONTACT SECTION ── */}
-                <section id="contact" className="py-20 md:py-28 border-t border-neutral-200 dark:border-zinc-800 bg-neutral-50/50 dark:bg-zinc-950">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <section
+                    id="contact"
+                    className="border-t border-neutral-200 bg-neutral-50/50 py-20 md:py-28 dark:border-zinc-800 dark:bg-zinc-950"
+                >
+                    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="grid gap-12 lg:grid-cols-2">
                             <div className="sr sr-left">
-                                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">
+                                <h2 className="mb-4 text-3xl font-extrabold tracking-tight sm:text-4xl">
                                     Une question ? Un projet ?
                                 </h2>
-                                <p className="text-neutral-600 dark:text-neutral-400 mb-8 max-w-lg">
-                                    N'hésitez pas à nous contacter pour toute demande de renseignement ou pour solliciter un devis de réalisation.
+                                <p className="mb-8 max-w-lg text-neutral-600 dark:text-neutral-400">
+                                    N'hésitez pas à nous contacter pour toute
+                                    demande de renseignement ou pour solliciter
+                                    un devis de réalisation.
                                 </p>
 
                                 <div className="space-y-6">
                                     <div className="flex items-center gap-4">
-                                        <div className="h-11 w-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">
                                             <Phone className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-muted-foreground font-semibold">Téléphone</p>
-                                            <a href={`tel:${profile?.telephone ?? '+33102030405'}`} className="text-sm font-semibold hover:text-indigo-600 dark:hover:text-indigo-400">
-                                                {profile?.telephone ?? '+33 (0)1 02 03 04 05'}
+                                            <p className="text-xs font-semibold text-muted-foreground">
+                                                Téléphone
+                                            </p>
+                                            <a
+                                                href={`tel:${profile?.telephone ?? '+33102030405'}`}
+                                                className="text-sm font-semibold hover:text-indigo-600 dark:hover:text-indigo-400"
+                                            >
+                                                {profile?.telephone ??
+                                                    '+33 (0)1 02 03 04 05'}
                                             </a>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center gap-4">
-                                        <div className="h-11 w-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">
                                             <Mail className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-muted-foreground font-semibold">Email</p>
-                                            <a href={`mailto:${profile?.email ?? 'contact@larareact-maps.com'}`} className="text-sm font-semibold hover:text-indigo-600 dark:hover:text-indigo-400">
-                                                {profile?.email ?? 'contact@larareact-maps.com'}
+                                            <p className="text-xs font-semibold text-muted-foreground">
+                                                Email
+                                            </p>
+                                            <a
+                                                href={`mailto:${profile?.email ?? 'contact@larareact-maps.com'}`}
+                                                className="text-sm font-semibold hover:text-indigo-600 dark:hover:text-indigo-400"
+                                            >
+                                                {profile?.email ??
+                                                    'contact@larareact-maps.com'}
                                             </a>
                                         </div>
                                     </div>
 
                                     <div className="flex items-center gap-4">
-                                        <div className="h-11 w-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/30 dark:text-indigo-400">
                                             <MapPin className="h-5 w-5" />
                                         </div>
                                         <div>
-                                            <p className="text-xs text-muted-foreground font-semibold">Localisation</p>
+                                            <p className="text-xs font-semibold text-muted-foreground">
+                                                Localisation
+                                            </p>
                                             <p className="text-sm font-semibold">
                                                 Dschang, Ouest Cameroun
                                             </p>
@@ -866,78 +1465,125 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                             </div>
 
                             {/* Simple beautiful static contact form/mockup */}
-                            <div className="sr sr-right bg-white dark:bg-zinc-900 border border-neutral-200 dark:border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xs">
-                                <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                            <div className="sr sr-right rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs sm:p-8 dark:border-zinc-800 dark:bg-zinc-900">
+                                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
                                     <MessageSquare className="h-5 w-5 text-indigo-500" />
                                     Envoyer un message
                                 </h3>
 
                                 {formSubmitted ? (
-                                    <div className="p-6 text-center bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/50 rounded-xl space-y-2">
-                                        <CheckCircle2 className="h-8 w-8 mx-auto text-indigo-600 dark:text-indigo-400" />
-                                        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">Message envoyé avec succès !</p>
-                                        <p className="text-xs text-muted-foreground">Merci pour votre intérêt.</p>
+                                    <div className="space-y-2 rounded-xl border border-indigo-100 bg-indigo-50/50 p-6 text-center dark:border-indigo-900/50 dark:bg-indigo-950/20">
+                                        <CheckCircle2 className="mx-auto h-8 w-8 text-indigo-600 dark:text-indigo-400" />
+                                        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
+                                            Message envoyé avec succès !
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                            Merci pour votre intérêt.
+                                        </p>
                                         <button
-                                            onClick={() => setFormSubmitted(false)}
-                                            className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold mt-2"
+                                            onClick={() =>
+                                                setFormSubmitted(false)
+                                            }
+                                            className="mt-2 text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
                                         >
                                             Envoyer un autre message
                                         </button>
                                     </div>
                                 ) : (
-                                    <form onSubmit={submitContact} className="space-y-4">
+                                    <form
+                                        onSubmit={submitContact}
+                                        className="space-y-4"
+                                    >
                                         <div className="grid gap-2">
-                                            <label className="text-xs font-semibold" htmlFor="contact-name">Nom complet</label>
+                                            <label
+                                                className="text-xs font-semibold"
+                                                htmlFor="contact-name"
+                                            >
+                                                Nom complet
+                                            </label>
                                             <input
                                                 id="contact-name"
                                                 type="text"
                                                 placeholder="Votre nom..."
                                                 value={contactForm.data.name}
-                                                onChange={e => contactForm.setData('name', e.target.value)}
-                                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-950"
+                                                onChange={(e) =>
+                                                    contactForm.setData(
+                                                        'name',
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden dark:bg-zinc-950"
                                                 required
                                             />
                                             {contactForm.errors.name && (
-                                                <p className="text-xs text-rose-500">{contactForm.errors.name}</p>
+                                                <p className="text-xs text-rose-500">
+                                                    {contactForm.errors.name}
+                                                </p>
                                             )}
                                         </div>
                                         <div className="grid gap-2">
-                                            <label className="text-xs font-semibold" htmlFor="contact-email">Email</label>
+                                            <label
+                                                className="text-xs font-semibold"
+                                                htmlFor="contact-email"
+                                            >
+                                                Email
+                                            </label>
                                             <input
                                                 id="contact-email"
                                                 type="email"
                                                 placeholder="votre@email.com"
                                                 value={contactForm.data.email}
-                                                onChange={e => contactForm.setData('email', e.target.value)}
-                                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-950"
+                                                onChange={(e) =>
+                                                    contactForm.setData(
+                                                        'email',
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden dark:bg-zinc-950"
                                                 required
                                             />
                                             {contactForm.errors.email && (
-                                                <p className="text-xs text-rose-500">{contactForm.errors.email}</p>
+                                                <p className="text-xs text-rose-500">
+                                                    {contactForm.errors.email}
+                                                </p>
                                             )}
                                         </div>
                                         <div className="grid gap-2">
-                                            <label className="text-xs font-semibold" htmlFor="contact-msg">Message</label>
+                                            <label
+                                                className="text-xs font-semibold"
+                                                htmlFor="contact-msg"
+                                            >
+                                                Message
+                                            </label>
                                             <textarea
                                                 id="contact-msg"
                                                 placeholder="Décrivez votre besoin..."
                                                 rows={4}
                                                 value={contactForm.data.message}
-                                                onChange={e => contactForm.setData('message', e.target.value)}
-                                                className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring dark:bg-zinc-950"
+                                                onChange={(e) =>
+                                                    contactForm.setData(
+                                                        'message',
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden dark:bg-zinc-950"
                                                 required
                                             />
                                             {contactForm.errors.message && (
-                                                <p className="text-xs text-rose-500">{contactForm.errors.message}</p>
+                                                <p className="text-xs text-rose-500">
+                                                    {contactForm.errors.message}
+                                                </p>
                                             )}
                                         </div>
 
                                         <button
                                             type="submit"
                                             disabled={contactForm.processing}
-                                            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 font-semibold text-xs transition-colors shadow-md shadow-indigo-600/15 disabled:opacity-50"
+                                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 py-2.5 text-xs font-semibold text-white shadow-md shadow-indigo-600/15 transition-colors hover:bg-indigo-500 disabled:opacity-50"
                                         >
-                                            {contactForm.processing ? 'Envoi...' : 'Envoyer le message'}
+                                            {contactForm.processing
+                                                ? 'Envoi...'
+                                                : 'Envoyer le message'}
                                         </button>
                                     </form>
                                 )}
@@ -947,13 +1593,29 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                 </section>
 
                 {/* ── FOOTER ── */}
-                <footer className="border-t border-neutral-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 py-8">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
-                        <p>© {new Date().getFullYear()} {profile?.name ?? 'Portfolio Pro'}. Tous droits réservés.</p>
+                <footer className="border-t border-neutral-200 bg-white py-8 dark:border-zinc-900 dark:bg-zinc-950">
+                    <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 text-xs text-neutral-500 sm:flex-row sm:px-6 lg:px-8">
+                        <p>
+                            © {new Date().getFullYear()}{' '}
+                            {profile?.name ?? 'Portfolio Pro'}. Tous droits
+                            réservés.
+                        </p>
                         <div className="flex gap-6">
-                            <a href="#about" className="hover:text-foreground">À propos</a>
-                            <a href="#projects" className="hover:text-foreground">Projets</a>
-                            <a href="#gallery" className="hover:text-foreground">Galerie</a>
+                            <a href="#about" className="hover:text-foreground">
+                                À propos
+                            </a>
+                            <a
+                                href="#projects"
+                                className="hover:text-foreground"
+                            >
+                                Projets
+                            </a>
+                            <a
+                                href="#gallery"
+                                className="hover:text-foreground"
+                            >
+                                Galerie
+                            </a>
                         </div>
                     </div>
                 </footer>
@@ -962,31 +1624,37 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
             {/* ── LIGHTBOX ── */}
             {lightboxIndex !== null && gallery[lightboxIndex] && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xs animate-in fade-in duration-200"
+                    className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-black/90 backdrop-blur-xs duration-200 fade-in"
                     onClick={closeLightbox}
                 >
                     <button
                         onClick={closeLightbox}
-                        className="absolute top-4 right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                        className="absolute top-4 right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
                     >
                         <X className="h-5 w-5" />
                     </button>
 
-                    <div className="absolute top-4 left-1/2 -translate-x-1/2 text-white/60 text-sm">
+                    <div className="absolute top-4 left-1/2 -translate-x-1/2 text-sm text-white/60">
                         {lightboxIndex + 1} / {gallery.length}
                     </div>
 
                     {gallery.length > 1 && (
                         <>
                             <button
-                                onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                                className="absolute left-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    prevImage();
+                                }}
+                                className="absolute left-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
                             >
                                 <ChevronLeft className="h-5 w-5" />
                             </button>
                             <button
-                                onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                                className="absolute right-4 h-10 w-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    nextImage();
+                                }}
+                                className="absolute right-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
                             >
                                 <ChevronRight className="h-5 w-5" />
                             </button>
@@ -994,20 +1662,27 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                     )}
 
                     <div
-                        className="relative max-w-5xl max-h-[80vh] mx-16 flex flex-col items-center gap-4"
-                        onClick={e => e.stopPropagation()}
+                        className="relative mx-16 flex max-h-[80vh] max-w-5xl flex-col items-center gap-4"
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <img
-                            src={gallery[lightboxIndex].image_item}
-                            alt={gallery[lightboxIndex].description ?? 'Réalisation'}
-                            className="max-h-[72vh] max-w-full object-contain rounded-lg shadow-2xl"
+                            src={gallery[lightboxIndex].image_item_url}
+                            alt={
+                                gallery[lightboxIndex].description ??
+                                'Réalisation'
+                            }
+                            className="max-h-[72vh] max-w-full rounded-lg object-contain shadow-2xl"
                         />
                         <div className="text-center">
                             {gallery[lightboxIndex].project && (
-                                <p className="text-white font-bold text-sm">{gallery[lightboxIndex].project.name}</p>
+                                <p className="text-sm font-bold text-white">
+                                    {gallery[lightboxIndex].project.name}
+                                </p>
                             )}
                             {gallery[lightboxIndex].description && (
-                                <p className="text-white/70 text-xs mt-1">{gallery[lightboxIndex].description}</p>
+                                <p className="mt-1 text-xs text-white/70">
+                                    {gallery[lightboxIndex].description}
+                                </p>
                             )}
                         </div>
                     </div>

@@ -52,6 +52,7 @@ return [
             'secret' => env('SUPABASE_SECRET_ACCESS_KEY'),
             'region' => env('SUPABASE_REGION'),
             'bucket' => env('SUPABASE_BUCKET'),
+            'url' => env('SUPABASE_PUBLIC_URL'),
             'endpoint' => env('SUPABASE_ENDPOINT'),
             'use_path_style_endpoint' => true,
             'throw' => true,
