@@ -26,6 +26,7 @@ interface PortfolioProfile {
     sexe: 'M' | 'F';
     bio: string | null;
     profile_picture_url: string | null;
+    cv_url: string | null;
     skills: string | null;
     education: string | null;
 }
@@ -56,6 +57,8 @@ export default function Profile({
         education: portfolioProfile?.education ?? '',
     });
     const [portfolioFile, setPortfolioFile] = useState<File | null>(null);
+    const [cvFile, setCvFile] = useState<File | null>(null);
+    const cvInputRef = useRef<HTMLInputElement>(null);
     const [portfolioProcessing, setPortfolioProcessing] = useState(false);
     const [portfolioErrors, setPortfolioErrors] = useState<Record<string, string>>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,6 +81,9 @@ export default function Profile({
         Object.entries(portfolioData).forEach(([k, v]) => formData.append(k, v));
         if (portfolioFile) {
             formData.append('profile_picture', portfolioFile);
+        }
+        if (cvFile) {
+            formData.append('cv', cvFile);
         }
         formData.append('_method', 'POST');
 
@@ -225,6 +231,42 @@ export default function Profile({
                                     <UploadCloud className="h-3.5 w-3.5" />
                                     Choisir une photo
                                 </button>
+                            </div>
+                        </div>
+
+                        {/* CV upload */}
+                        <div className="flex items-center gap-6">
+                            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl border-2 border-border bg-neutral-100 ring-2 ring-indigo-500/20 dark:bg-neutral-800">
+                                <FileText className="h-10 w-10 text-muted-foreground opacity-40" />
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-sm font-medium">CV (PDF)</p>
+                                <p className="text-xs text-muted-foreground">
+                                    PDF uniquement. Max 5 Mo. Les visiteurs pourront le voir et le télécharger.
+                                </p>
+                                <input
+                                    ref={cvInputRef}
+                                    type="file"
+                                    accept="application/pdf,.pdf"
+                                    className="hidden"
+                                    onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => cvInputRef.current?.click()}
+                                    className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+                                >
+                                    <UploadCloud className="h-3.5 w-3.5" />
+                                    {cvFile ? cvFile.name : 'Choisir un fichier PDF'}
+                                </button>
+                                {portfolioProfile?.cv_url && !cvFile && (
+                                    <p className="text-xs">
+                                        <a href="/cv" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline dark:text-indigo-400">
+                                            Voir le CV actuel
+                                        </a>
+                                    </p>
+                                )}
+                                {portfolioErrors.cv && <p className="text-xs text-rose-500">{portfolioErrors.cv}</p>}
                             </div>
                         </div>
 

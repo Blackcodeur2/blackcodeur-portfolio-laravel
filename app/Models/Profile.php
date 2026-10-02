@@ -20,18 +20,26 @@ class Profile extends Model
         'skills',
         'education',
         'profile_picture',
+        'cv',
     ];
 
     protected $casts = [
         'birth_date' => 'date',
     ];
 
-    protected $appends = ['profile_picture_url'];
+    protected $appends = ['profile_picture_url', 'cv_url'];
 
     protected function profilePictureUrl(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->profile_picture ? Storage::disk('supabase')->url($this->profile_picture) : null,
+        );
+    }
+
+    protected function cvUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->cv ? Storage::disk('supabase')->url($this->cv) : null,
         );
     }
 

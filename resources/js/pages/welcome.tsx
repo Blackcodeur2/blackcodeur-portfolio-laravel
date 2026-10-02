@@ -17,6 +17,8 @@ import {
     ChevronRight,
     X,
     MessageSquare,
+    FileText,
+    Download,
     Sun,
     Moon,
     Monitor,
@@ -64,6 +66,7 @@ interface PortfolioProfile {
     sexe: 'M' | 'F';
     bio: string | null;
     profile_picture_url: string | null;
+    cv_url: string | null;
     skills: string | null;
     education: string | null;
 }
@@ -371,6 +374,26 @@ export default function Welcome({ projects, gallery, stats, profile }: Props) {
                                             <Mail className="h-4 w-4 text-muted-foreground" />
                                             Me contacter
                                         </a>
+                                        {profile.cv_url && (
+                                            <>
+                                                <a
+                                                    href="/cv"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-6 py-3.5 text-sm font-semibold text-indigo-700 transition-all duration-200 hover:bg-indigo-100 dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-300"
+                                                >
+                                                    <FileText className="h-4 w-4" />
+                                                    Voir le CV
+                                                </a>
+                                                <a
+                                                    href="/cv/download"
+                                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-6 py-3.5 text-sm font-semibold text-foreground transition-all duration-200 hover:bg-neutral-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                                                >
+                                                    <Download className="h-4 w-4 text-muted-foreground" />
+                                                    Télécharger
+                                                </a>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
 

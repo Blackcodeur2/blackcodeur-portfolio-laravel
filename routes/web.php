@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\CvController;
 use App\Http\Controllers\DevisController;
 use App\Http\Controllers\EnterpriseController;
 use App\Http\Controllers\ProjectController;
@@ -10,14 +11,13 @@ use App\Models\Enterprise;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\ProjectGallery;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/migrate', function () {
     \Artisan::call('db:seed');
+
     return 'Database migrated and seeded successfully!';
 })->name('migrate');
-
 
 Route::get('/', function () {
     $projects = Project::where('is_published', true)->with(['enterprises'])->latest()->take(6)->get();
@@ -41,6 +41,10 @@ Route::get('/', function () {
 
 // Public contact form submission (no auth required)
 Route::post('contact', [ContactMessageController::class, 'store'])->name('contact.store');
+
+// Public CV access
+Route::get('cv', [CvController::class, 'show'])->name('cv.show');
+Route::get('cv/download', [CvController::class, 'download'])->name('cv.download');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [ProjectController::class, 'dashboard'])->name('dashboard');

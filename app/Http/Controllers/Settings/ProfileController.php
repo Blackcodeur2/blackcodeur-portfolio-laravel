@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -60,6 +61,7 @@ class ProfileController extends Controller
             'skills' => ['nullable', 'string', 'max:1000'],
             'education' => ['nullable', 'string', 'max:2000'],
             'profile_picture' => ['nullable', 'image', 'max:2048'],
+            'cv' => ['nullable', 'mimes:pdf', 'max:5120'],
         ]);
 
         if ($request->hasFile('profile_picture')) {
@@ -68,6 +70,14 @@ class ProfileController extends Controller
                 Storage::disk('supabase')->delete($profile->profile_picture);
             }
             $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'supabase');
+        }
+
+        if ($request->hasFile('cv')) {
+            $profile = $request->user()->profile;
+            if ($profile && $profile->cv) {
+                Storage::disk('supabase')->delete($profile->cv);
+            }
+            $validated['cv'] = $request->file('cv')->store('cvs', 'supabase');
         }
 
         $request->user()->profile()->updateOrCreate(
